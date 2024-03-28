@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
+#include <sstream>
 #include <vector>
+#include <map>
 #include <unistd.h>
 #include <fcntl.h>
 #include <poll.h>
@@ -16,6 +18,19 @@
 #define	SOCK_QUEUE_SIZE	10
 #define	POLL_TIMEOUT	100
 
+#define	HTTP_UNKNOWN	0
+#define	HTTP_GET	1
+#define	HTTP_POST	2
+#define	HTTP_DELETE	3
+
+typedef struct	s_httprequest
+{
+	unsigned int				method;
+	std::string				resource;
+	std::string				version;
+	std::map<std::string, std::string>	head;
+	std::vector<std::byte>			body;
+}		t_httprequest;
 
 typedef struct	s_ip
 {
@@ -30,7 +45,12 @@ typedef struct	s_ip
 pollfd	open_listen_socket(const uint32_t &ip, const uint16_t &port);
 pollfd	open_connection_socket(int socket_fd);
 
+//	request.cpp
+
+t_httprequest				parse_request(const std::string &request);
+std::map<std::string, std::string>	parse_head(const std::string &head);
+
 //	UTIL
 
-int		error(const std::string &msg, int err_code);
+int		error(const std::string &msg, const int &err_code);
 uint32_t	ip(uint8_t a, uint8_t b, uint8_t c, uint8_t d);

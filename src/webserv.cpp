@@ -6,6 +6,8 @@ int	main(int argc, char **argv)
 	std::vector<pollfd *>	connections;
 	pollfd			listen;
 	pollfd			connection;
+	pollfd			*current_connection;
+	t_httprequest		request;
 	char			buffer[SOCK_READ_SIZE];	
 	int			status;
 
@@ -30,23 +32,44 @@ int	main(int argc, char **argv)
 				connections.push_back(&server.back());
 			}
 		}
-		for (pollfd *&current_connection : connections)
+		for (size_t i = 0; i < connections.size(); i++)
 		{
-			if (current_connection == nullptr)
-				continue ;
+       			current_connection = connections[i];
+			if (current_connection->fd == -1)
+			{
+				connections.erase(connections.begin() + i);
+				if (i < connections.size())
+					current_connection = connections[i];
+				else
+					break ;
+			}
 			if (current_connection->revents & POLLIN)
 			{
+				memset(buffer, 0, sizeof(char) * SOCK_READ_SIZE);
 				status = read(current_connection->fd, buffer, SOCK_READ_SIZE);
+				if (status == -1)
+				{
+					std::cout << "read(): " << strerror(errno) << std::endl;
+					continue ;
+				}
 				if (status == 0)
 				{
 					close(current_connection->fd);
 					current_connection->fd = -1;
-					current_connection = nullptr;
        					std::cout << "a connection has closed." << std::endl;
 				}
 				else
-       					std::cout << buffer << "\n" << std::endl; 
-				buffer[0] = '\n';
+				{
+					request = parse_request(buffer);
+					std::cout << "resource: " << request.resource << std::endl;
+       					std::cout << "version:	" << request.version << std::endl;
+					for (auto const &[key, val] : request.head)
+						std::cout << key << ": " << val << std::endl;
+       					std::cout << std::endl;
+					for (const std::byte &byte : request.body)
+						std::cout << (char)byte;
+       					std::cout << std::endl;
+				}
 			}
 		}
 	}

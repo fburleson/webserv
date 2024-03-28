@@ -3,6 +3,7 @@ NAME		=	webserv
 SRCDIR		=	./src/
 UTILDIR		=	$(SRCDIR)util/
 SOCKETDIR	=	$(SRCDIR)socket/
+REQUESTDIR	=	$(SRCDIR)request/
 BINDIR		=	./bin/
 INCLUDEDIR	=	./include/
 
@@ -10,6 +11,8 @@ SRCFILES	=	webserv.cpp		\
 			log.cpp			\
 			ip.cpp			\
 			socket.cpp		\
+			parse_head.cpp		\
+			parse_request.cpp	\
 
 BINFILES	=	$(notdir $(SRCFILES:.cpp=.o))
 
@@ -34,6 +37,10 @@ $(BINDIR)%.o:	$(UTILDIR)%.cpp
 			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
 $(BINDIR)%.o:	$(SOCKETDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(REQUESTDIR)%.cpp
 			@mkdir -p $(BINDIR)
 			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
