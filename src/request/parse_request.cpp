@@ -32,7 +32,7 @@ static std::string	get_next_info(const std::string &start)
 	return (info.str());
 }
 
-static unsigned int	get_method(const std::string &request)
+static HTTPMethod	get_method(const std::string &request)
 {
 	std::string	method;
 

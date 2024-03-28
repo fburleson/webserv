@@ -18,14 +18,16 @@
 #define	SOCK_QUEUE_SIZE	10
 #define	POLL_TIMEOUT	100
 
-#define	HTTP_UNKNOWN	0
-#define	HTTP_GET	1
-#define	HTTP_POST	2
-#define	HTTP_DELETE	3
+enum HTTPMethod {
+	HTTP_UNKNOWN,
+	HTTP_GET,
+	HTTP_POST,
+	HTTP_DELETE
+};
 
 typedef struct	s_httprequest
 {
-	unsigned int				method;
+	HTTPMethod				method;
 	std::string				resource;
 	std::string				version;
 	std::map<std::string, std::string>	head;
