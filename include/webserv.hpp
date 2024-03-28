@@ -10,6 +10,7 @@
 #define	OK		0
 #define	ERR_NO_CONFIG	2
 #define	ERR_NOP_SOCK	3
+#define	ERR_NO_CONN	4
 
 #define	SOCK_READ_SIZE	1024
 #define	SOCK_QUEUE_SIZE	10
