@@ -5,6 +5,8 @@ UTILDIR		=	$(SRCDIR)util/
 SOCKETDIR	=	$(SRCDIR)socket/
 REQUESTDIR	=	$(SRCDIR)request/
 SERVERDIR	=	$(SRCDIR)server/
+RESPONSEDIR	=	$(SRCDIR)response/
+VHOSTDIR	=	$(SRCDIR)vhost/
 BINDIR		=	./bin/
 INCLUDEDIR	=	./include/
 
@@ -15,6 +17,8 @@ SRCFILES	=	webserv.cpp		\
 			server.cpp		\
 			parse_head.cpp		\
 			parse_request.cpp	\
+			response.cpp		\
+			VHost.cpp		\
 
 BINFILES	=	$(notdir $(SRCFILES:.cpp=.o))
 
@@ -47,6 +51,14 @@ $(BINDIR)%.o:	$(REQUESTDIR)%.cpp
 			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
 $(BINDIR)%.o:	$(SERVERDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(RESPONSEDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(VHOSTDIR)%.cpp
 			@mkdir -p $(BINDIR)
 			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 

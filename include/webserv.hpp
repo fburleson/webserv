@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <vector>
 #include <map>
@@ -8,6 +9,7 @@
 #include <poll.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+// #include "VHost.hpp"
 
 #define	OK		0
 #define	ERR_NO_CONFIG	2
@@ -28,6 +30,11 @@ enum HTTPMethod {
 	HTTP_DELETE
 };
 
+enum HTTPStatus {
+	HTTP_OK = 200,
+	HTTP_NOT_FOUND = 404
+};
+
 typedef struct	s_server
 {
 	std::vector<pollfd>	sockets;
@@ -41,7 +48,18 @@ typedef struct	s_httprequest
 	std::string				version;
 	std::map<std::string, std::string>	head;
 	std::vector<std::byte>			body;
+	pollfd					client;
 }		t_httprequest;
+
+typedef struct	s_httpresponse
+{
+	HTTPStatus				status;
+	std::string				message;
+	std::string				version;
+	std::map<std::string, std::string>	head;
+	std::vector<std::byte>			body;
+	pollfd					client;
+}		t_httpresponse;
 
 typedef struct	s_ip
 {
@@ -67,6 +85,11 @@ void	add_connection(t_server &server, const pollfd &socket, std::vector<size_t> 
 
 t_httprequest				parse_request(const std::string &request);
 std::map<std::string, std::string>	parse_head(const std::string &head);
+
+//	REPONSE
+
+std::vector<std::byte>	ftobyte(const std::string &file);
+void			send_response(const t_httpresponse &http_response);
 
 //	UTIL
 
