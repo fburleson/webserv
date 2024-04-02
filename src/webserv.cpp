@@ -2,74 +2,60 @@
 
 int	main(int argc, char **argv)
 {
-	std::vector<pollfd>	server;
-	std::vector<pollfd *>	connections;
-	pollfd			listen;
-	pollfd			connection;
-	pollfd			*current_connection;
-	t_httprequest		request;
-	char			buffer[SOCK_READ_SIZE];	
+	bool			running = true;
+	t_server		server;
+	std::vector<size_t>	connections;
+	size_t			n_connections;
 	int			status;
+	char			buffer[BUFF_READ_SIZE];
+	t_httprequest		request;
 
 	argv = argv;
 	if (argc <= 1)
-		return (error("no configuration file", ERR_NO_CONFIG));
-	listen = open_listen_socket(ip(127, 0, 0, 1), 9999);
-	if (listen.fd == -1)
-		return (error("failed to start server", ERR_NOP_SOCK));
-	server.push_back(listen);
-	while (true)
+		return (error("no configuration file provided", ERR_NO_CONFIG));
+	add_socket(server, 0, 9999);
+	add_socket(server, 0, 9998);
+	add_socket(server, 0, 9997);
+	add_socket(server, 0, 9996);
+	add_socket(server, 0, 9995);
+	while (running)
 	{
-		poll(&server[0], server.size(), POLL_TIMEOUT);
-		if (server[0].revents & POLLIN)
+		poll_server(server);
+		for (size_t &idx: server.listens)
 		{
-			connection = open_connection_socket(server[0].fd);
-			if (connection.fd == -1)
-				error("failed to accept connection", ERR_NO_CONN);
-			else
+			if (server.sockets[idx].revents & POLLIN)
 			{
-				server.push_back(connection);
-				connections.push_back(&server.back());
+				add_connection(server, server.sockets[idx], connections);
+				n_connections++;
+				std::cout << "# connections:	" << n_connections << std::endl;
 			}
 		}
-		for (size_t i = 0; i < connections.size(); i++)
+		for (size_t &idx : connections)
 		{
-       			current_connection = connections[i];
-			if (current_connection->fd == -1)
+			if (server.sockets[idx].revents & POLLIN)
 			{
-				connections.erase(connections.begin() + i);
-				if (i < connections.size())
-					current_connection = connections[i];
-				else
-					break ;
-			}
-			if (current_connection->revents & POLLIN)
-			{
-				memset(buffer, 0, sizeof(char) * SOCK_READ_SIZE);
-				status = read(current_connection->fd, buffer, SOCK_READ_SIZE);
+				memset(buffer, 0, BUFF_READ_SIZE);
+				status = read(server.sockets[idx].fd, buffer, BUFF_READ_SIZE);
 				if (status == -1)
-				{
-					std::cout << "read(): " << strerror(errno) << std::endl;
-					continue ;
-				}
+					std::cerr << " read(): " << strerror(errno) << std::endl;
 				if (status == 0)
 				{
-					close(current_connection->fd);
-					current_connection->fd = -1;
-       					std::cout << "a connection has closed." << std::endl;
+					server.sockets[idx].fd = -1;
+					n_connections--;
+					std::cout << "a client has diconnected." << std::endl;
 				}
-				else
-				{
-					request = parse_request(buffer);
-					std::cout << "resource: " << request.resource << std::endl;
-       					std::cout << "version:	" << request.version << std::endl;
-					for (auto const &[key, val] : request.head)
-						std::cout << key << ": " << val << std::endl;
-       					std::cout << std::endl;
-					for (const std::byte &byte : request.body)
-						std::cout << (char)byte;
-       					std::cout << std::endl;
-				}
+				if (status == -1 || status == 0)
+					continue ;
+				request = parse_request(buffer);
+				std::cout << request.method << " ";
+				std::cout << request.resource << " ";
+				std::cout << request.version << std::endl;
+				for (auto const &[key, val] : request.head)
+					std::cout << key << ":" << val << std::endl;
+				std::cout << std::endl;
+				for (const std::byte &byte : request.body)
+					std::cout << (char)byte;
+				std::cout << std::endl;
 			}
 		}
 	}

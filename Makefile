@@ -4,6 +4,7 @@ SRCDIR		=	./src/
 UTILDIR		=	$(SRCDIR)util/
 SOCKETDIR	=	$(SRCDIR)socket/
 REQUESTDIR	=	$(SRCDIR)request/
+SERVERDIR	=	$(SRCDIR)server/
 BINDIR		=	./bin/
 INCLUDEDIR	=	./include/
 
@@ -11,6 +12,7 @@ SRCFILES	=	webserv.cpp		\
 			log.cpp			\
 			ip.cpp			\
 			socket.cpp		\
+			server.cpp		\
 			parse_head.cpp		\
 			parse_request.cpp	\
 
@@ -41,6 +43,10 @@ $(BINDIR)%.o:	$(SOCKETDIR)%.cpp
 			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
 $(BINDIR)%.o:	$(REQUESTDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(SERVERDIR)%.cpp
 			@mkdir -p $(BINDIR)
 			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
