@@ -10,6 +10,12 @@ std::string	process_message(const HTTPStatus &code)
 		return ("HTTP Version Not Supported");
 	if (code == HTTP_BAD_METHOD)
 		return ("Method Not Allowed");
+	if (code == HTTP_CONTINUE)
+		return ("Continue");
+	if (code == HTTP_CREATED)
+		return ("Created");
+	if (code == HTTP_NO_CONTENT)
+		return ("No Content");
 	return ("Internal Server Error");
 }
 

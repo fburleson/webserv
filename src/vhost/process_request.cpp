@@ -16,3 +16,20 @@ void	VHost::_process_get_method(const t_httprequest &request, t_httpresponse &re
 	response.head.insert({"Content-Type", "text/html"});
 }
 
+void	VHost::_process_post_method(const t_httprequest &request, t_httpresponse &response) const
+{
+	if (request.head.find("Expect") != request.head.end())
+	{
+		if (request.head.at("Expect") == "100-continue")
+		{
+			response.status = HTTP_CONTINUE;
+			return ;
+		}
+	}
+	std::ofstream	new_file(this->_parse_resource(request.resource));
+
+	for (const std::byte &byte : request.body)
+		new_file << (char)byte;
+	response.status = HTTP_NO_CONTENT;
+}
+

@@ -14,6 +14,7 @@ class	VHost
 		std::string		_parse_resource(const std::string &resource) const;
 		std::vector<std::byte>	_get_err_page(const HTTPStatus &code) const;
 		void			_process_get_method(const t_httprequest &request, t_httpresponse &response) const;
+		void			_process_post_method(const t_httprequest &request, t_httpresponse &response) const;
 
 	public:
 		VHost(void);

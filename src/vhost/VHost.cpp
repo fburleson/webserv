@@ -45,6 +45,8 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 	}
 	if (request.method == HTTP_GET)
 		this->_process_get_method(request, response);
+	else if (request.method == HTTP_POST)
+		this->_process_post_method(request, response);
 	else
 	{
 		response.status = HTTP_BAD_METHOD;
