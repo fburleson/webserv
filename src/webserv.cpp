@@ -20,6 +20,7 @@ int	main(int argc, char **argv)
 	add_socket(server, 0, 9997);
 	add_socket(server, 0, 9996);
 	add_socket(server, 0, 9995);
+	virtual_host.set_err_page(HTTP_NOT_FOUND, "./res/custom_error.html");
 	while (running)
 	{
 		poll_server(server);

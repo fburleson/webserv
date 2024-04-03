@@ -13,11 +13,13 @@ INCLUDEDIR	=	./include/
 SRCFILES	=	webserv.cpp		\
 			log.cpp			\
 			ip.cpp			\
+			file_exists.cpp		\
 			socket.cpp		\
 			server.cpp		\
 			parse_head.cpp		\
 			parse_request.cpp	\
 			response.cpp		\
+			process_body.cpp	\
 			VHost.cpp		\
 
 BINFILES	=	$(notdir $(SRCFILES:.cpp=.o))

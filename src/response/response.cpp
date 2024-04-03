@@ -1,6 +1,6 @@
 #include "webserv.hpp"
 
-static std::vector<std::byte>	stobyte(const std::string &body)
+std::vector<std::byte>	stobyte(const std::string &body)
 {
 	std::vector<std::byte>	bytes;
 	

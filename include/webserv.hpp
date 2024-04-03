@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <poll.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 // #include "VHost.hpp"
 
@@ -32,7 +33,9 @@ enum HTTPMethod {
 
 enum HTTPStatus {
 	HTTP_OK = 200,
-	HTTP_NOT_FOUND = 404
+	HTTP_NOT_FOUND = 404,
+	HTTP_INTERNAL_ERROR = 500,
+	HTTP_BAD_VERSION = 505
 };
 
 typedef struct	s_server
@@ -88,6 +91,7 @@ std::map<std::string, std::string>	parse_head(const std::string &head);
 
 //	REPONSE
 
+std::vector<std::byte>	stobyte(const std::string &body);
 std::vector<std::byte>	ftobyte(const std::string &file);
 void			send_response(const t_httpresponse &http_response);
 
@@ -95,3 +99,5 @@ void			send_response(const t_httpresponse &http_response);
 
 int					error(const std::string &msg, const int &err_code);
 uint32_t				ip(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
+bool					file_exists(const std::string &path);
+
