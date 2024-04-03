@@ -47,6 +47,7 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		this->_process_get_method(request, response);
 	else
 	{
+		response.status = HTTP_BAD_METHOD;
 		response.body = this->_get_err_page(HTTP_BAD_METHOD);
 		response.head.insert({"Content-Length", std::to_string(response.body.size())});
 		response.head.insert({"Content-Type", "text/html"});
