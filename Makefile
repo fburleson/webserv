@@ -18,8 +18,9 @@ SRCFILES	=	webserv.cpp		\
 			server.cpp		\
 			parse_head.cpp		\
 			parse_request.cpp	\
+			response_util.cpp	\
 			response.cpp		\
-			process_body.cpp	\
+			process_request.cpp	\
 			VHost.cpp		\
 
 BINFILES	=	$(notdir $(SRCFILES:.cpp=.o))

@@ -24,6 +24,8 @@
 
 #define	BUFF_READ_SIZE	1024
 
+#define	HTTP_VERSION	"HTTP/1.1"
+
 enum HTTPMethod {
 	HTTP_UNKNOWN,
 	HTTP_GET,
@@ -34,6 +36,7 @@ enum HTTPMethod {
 enum HTTPStatus {
 	HTTP_OK = 200,
 	HTTP_NOT_FOUND = 404,
+	HTTP_BAD_METHOD = 405,
 	HTTP_INTERNAL_ERROR = 500,
 	HTTP_BAD_VERSION = 505
 };
@@ -94,6 +97,8 @@ std::map<std::string, std::string>	parse_head(const std::string &head);
 std::vector<std::byte>	stobyte(const std::string &body);
 std::vector<std::byte>	ftobyte(const std::string &file);
 void			send_response(const t_httpresponse &http_response);
+std::string		process_message(const HTTPStatus &code);
+std::vector<std::byte>	generate_err_page(const HTTPStatus &code);
 
 //	UTIL
 

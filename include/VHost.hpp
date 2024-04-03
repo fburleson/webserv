@@ -12,8 +12,8 @@ class	VHost
 		VHost	&operator=(const VHost &host);
 
 		std::string		_parse_resource(const std::string &resource) const;
-		HTTPStatus		_process_code(const t_httprequest &request) const;
-		std::vector<std::byte>	_process_body(const t_httprequest &request, const t_httpresponse &response) const;
+		std::vector<std::byte>	_get_err_page(const HTTPStatus &code) const;
+		void			_process_get_method(const t_httprequest &request, t_httpresponse &response) const;
 
 	public:
 		VHost(void);

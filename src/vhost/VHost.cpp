@@ -23,44 +23,35 @@ std::string	VHost::_parse_resource(const std::string &resource) const
 	return (this->_root + resource);
 }
 
-HTTPStatus	VHost::_process_code(const t_httprequest &request) const
+std::vector<std::byte>	VHost::_get_err_page(const HTTPStatus &code) const
 {
-	HTTPStatus	code = HTTP_INTERNAL_ERROR;
-
-	if (request.version != "HTTP/1.1")
-		return (HTTP_BAD_VERSION);
-	if (request.method == HTTP_GET)
-	{
-		if (file_exists(this->_parse_resource(request.resource)))
-			code = HTTP_OK;
-		else
-			code = HTTP_NOT_FOUND;
-	}
-	return (code);
-}
-
-static std::string	process_message(const HTTPStatus &code)
-{
-	if (code == HTTP_OK)
-		return ("OK");
-	if (code == HTTP_NOT_FOUND)
-		return ("Not Found");
-	if (code == HTTP_BAD_VERSION)
-		return ("HTTP Version Not Supported");
-	return ("Internal Server Error");
+	if (this->_err_pages.find(code) != this->_err_pages.end())
+		return (ftobyte(this->_err_pages.at(code)));
+	return (generate_err_page(code));
 }
 
 t_httpresponse	VHost::process_request(const t_httprequest &request) const
 {
 	t_httpresponse	response;
-
-	response.version = "HTTP/1.1";
-	response.status = this->_process_code(request); 
-	response.body = this->_process_body(request, response);
-	response.head.insert({"Content-Length", std::to_string(response.body.size())});
-	response.head.insert({"Content-Type", "text/html"});
-	response.message = process_message(response.status);
+	
+	response.version = HTTP_VERSION;
+	response.status = HTTP_INTERNAL_ERROR;
 	response.client = request.client;
+	if (request.version != response.version)
+	{
+		response.status = HTTP_BAD_VERSION;
+		response.message = process_message(response.status);
+		return (response);
+	}
+	if (request.method == HTTP_GET)
+		this->_process_get_method(request, response);
+	else
+	{
+		response.body = this->_get_err_page(HTTP_BAD_METHOD);
+		response.head.insert({"Content-Length", std::to_string(response.body.size())});
+		response.head.insert({"Content-Type", "text/html"});
+	}
+	response.message = process_message(response.status);
 	return (response);
 }
 
