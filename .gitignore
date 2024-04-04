@@ -1,4 +1,5 @@
 webserv
 bin/
 res/
+static/
 TODO.md
