@@ -16,6 +16,8 @@ std::string	process_message(const HTTPStatus &code)
 		return ("Created");
 	if (code == HTTP_NO_CONTENT)
 		return ("No Content");
+	if (code == HTTP_TOO_LARGE)
+		return ("Payload Too Large");
 	return ("Internal Server Error");
 }
 
