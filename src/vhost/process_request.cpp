@@ -12,7 +12,6 @@ void	VHost::_process_get_method(const t_httprequest &request, t_httpresponse &re
 		response.status = HTTP_OK;
 		response.body = ftobyte(this->_parse_resource(request.resource));
 	}
-	response.head.insert({"Content-Type", "text/html"});
 }
 
 void	VHost::_process_post_method(const t_httprequest &request, t_httpresponse &response) const
