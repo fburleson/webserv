@@ -100,7 +100,7 @@ std::map<std::string, std::string>	parse_head(const std::string &head);
 
 std::vector<std::byte>	stobyte(const std::string &body);
 std::vector<std::byte>	ftobyte(const std::string &file);
-void			send_response(const t_httpresponse &http_response);
+void			send_response(t_httpresponse &http_response);
 std::string		process_message(const HTTPStatus &code);
 std::vector<std::byte>	generate_err_page(const HTTPStatus &code);
 

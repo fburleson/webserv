@@ -48,19 +48,17 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		if ((unsigned int)std::atoi(request.head.at("Content-Length").c_str()) > this->_max_body_size)
 		{
 			response.status = HTTP_TOO_LARGE;
-			response.message = process_message(response.status);
 			return (response);
 		}
 	}
 	if (request.body.size() > this->_max_body_size)
 	{
 		response.status = HTTP_TOO_LARGE;
-		response.message = process_message(response.status);
+		return (response);
 	}
 	if (request.version != response.version)
 	{
 		response.status = HTTP_BAD_VERSION;
-		response.message = process_message(response.status);
 		return (response);
 	}
 	if (request.method == HTTP_GET)
@@ -76,7 +74,6 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		response.head.insert({"Content-Type", "text/html"});
 	}
 	response.head.insert({"Content-Length", std::to_string(response.body.size())});
-	response.message = process_message(response.status);
 	return (response);
 }
 
