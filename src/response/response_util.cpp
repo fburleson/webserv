@@ -30,7 +30,11 @@ std::vector<std::byte>	generate_err_page(const HTTPStatus &code)
 	buffer << "<html>";
 	buffer << "<head><title>" << code << " " << message << "</title></head>";
 	buffer << "<body>";
+	buffer << "<div style=\"text-align:center\">";
 	buffer << "<h1>" << code << " " << message << "</h1>";
+	buffer << "<hr>";
+	buffer << "<p>webserv</p>";
+	buffer << "</div>";
 	buffer << "</body>";
 	buffer << "</html>";
 	return (stobyte(buffer.str()));
