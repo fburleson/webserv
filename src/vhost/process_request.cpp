@@ -12,7 +12,6 @@ void	VHost::_process_get_method(const t_httprequest &request, t_httpresponse &re
 		response.status = HTTP_OK;
 		response.body = ftobyte(this->_parse_resource(request.resource));
 	}
-	response.head.insert({"Content-Length", std::to_string(response.body.size())});
 	response.head.insert({"Content-Type", "text/html"});
 }
 
@@ -31,5 +30,15 @@ void	VHost::_process_post_method(const t_httprequest &request, t_httpresponse &r
 	for (const std::byte &byte : request.body)
 		new_file << (char)byte;
 	response.status = HTTP_NO_CONTENT;
+}
+
+void	VHost::_process_delete_method(const t_httprequest &request, t_httpresponse &response) const
+{
+	int	status = std::remove(this->_parse_resource(request.resource).c_str());	
+	
+	if (status != 0)
+		response.status = HTTP_NOT_FOUND;
+	if (status == 0)
+		response.status = HTTP_NO_CONTENT;
 }
 
