@@ -19,6 +19,8 @@ void	VHost::_process_get_method(const t_httprequest &request, t_httpresponse &re
 
 void	VHost::_process_post_method(const t_httprequest &request, t_httpresponse &response) const
 {
+	std::string	resource;
+
 	if (request.head.find("Expect") != request.head.end())
 	{
 		if (request.head.at("Expect") == "100-continue")
@@ -27,11 +29,13 @@ void	VHost::_process_post_method(const t_httprequest &request, t_httpresponse &r
 			return ;
 		}
 	}
-	std::ofstream	new_file(this->_parse_resource(request.resource));
+	resource = this->_parse_resource(request.resource);
+	std::ofstream	new_file(resource);
 
 	for (const std::byte &byte : request.body)
 		new_file << (char)byte;
 	response.status = HTTP_NO_CONTENT;
+	response.head.insert({"Content-Location", resource});
 }
 
 void	VHost::_process_delete_method(const t_httprequest &request, t_httpresponse &response) const

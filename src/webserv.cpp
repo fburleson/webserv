@@ -23,6 +23,7 @@ int	main(int argc, char **argv)
 	virtual_host.set_err_page(HTTP_BAD_METHOD, "./res/custom_error.html");
 	virtual_host.set_root("/static");
 	virtual_host.allow_method(HTTP_GET);
+	virtual_host.allow_method(HTTP_POST);
 	while (running)
 	{
 		poll_server(server);
