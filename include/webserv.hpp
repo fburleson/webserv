@@ -38,6 +38,7 @@ enum HTTPStatus {
 	HTTP_OK = 200,
 	HTTP_CREATED = 201,
 	HTTP_NO_CONTENT = 204,
+	HTTP_PERM_MOVE = 301,
 	HTTP_NOT_FOUND = 404,
 	HTTP_BAD_METHOD = 405,
 	HTTP_TOO_LARGE = 413,
@@ -55,6 +56,7 @@ typedef struct	s_route
 {
 	std::string	root;
 	std::string	index;
+	std::string	http_redirect;
 }		t_route;
 
 typedef struct	s_httprequest

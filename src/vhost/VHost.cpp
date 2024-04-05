@@ -15,6 +15,11 @@ void	VHost::set_root(const std::string &root)
 	this->_route.root = root;
 }
 
+void	VHost::set_redirect(const std::string &url)
+{
+	this->_route.http_redirect = url;
+}
+
 void	VHost::set_err_page(const HTTPStatus &code, const std::string &file)
 {
 	this->_err_pages.insert({code, file});
@@ -46,6 +51,11 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 	response.version = HTTP_VERSION;
 	response.status = HTTP_INTERNAL_ERROR;
 	response.client = request.client;
+	if (request.version != response.version)
+	{
+		response.status = HTTP_BAD_VERSION;
+		return (response);
+	}
 	if (request.head.find("Content-Length") != request.head.end())
 	{
 		if ((unsigned int)std::atoi(request.head.at("Content-Length").c_str()) > this->_max_body_size)
@@ -59,9 +69,10 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		response.status = HTTP_TOO_LARGE;
 		return (response);
 	}
-	if (request.version != response.version)
+	if (!this->_route.http_redirect.empty())
 	{
-		response.status = HTTP_BAD_VERSION;
+		response.status = HTTP_PERM_MOVE;
+		response.head.insert({"Location", this->_route.http_redirect});
 		return (response);
 	}
 	if (request.method == HTTP_GET)

@@ -23,6 +23,7 @@ class	VHost
 		~VHost(void);
 
 		void		set_root(const std::string &root);
+		void		set_redirect(const std::string &url);
 		void		set_err_page(const HTTPStatus &code, const std::string &file);
 		void		set_max_body_size(const size_t &max_body_size);
 		t_httpresponse	process_request(const t_httprequest &request) const;
