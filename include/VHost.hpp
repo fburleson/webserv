@@ -4,7 +4,7 @@
 class	VHost
 {
 	private:
-		std::string				_root;
+		t_route					_route;
 		std::map<HTTPStatus, std::string>	_err_pages;
 		size_t					_max_body_size;
 

@@ -2,7 +2,8 @@
 
 VHost::VHost(void)
 {
-	this->_root = "res";
+	this->_route.root = ".";
+	this->_route.index = "index.html";
 	this->_max_body_size = 1024;
 }
 
@@ -11,7 +12,7 @@ VHost::~VHost(void)
 
 void	VHost::set_root(const std::string &root)
 {
-	this->_root = root;
+	this->_route.root = root;
 }
 
 void	VHost::set_err_page(const HTTPStatus &code, const std::string &file)
@@ -26,7 +27,9 @@ void	VHost::set_max_body_size(const size_t &max_body_size)
 
 std::string	VHost::_parse_resource(const std::string &resource) const
 {
-	return (this->_root + resource);
+	if (resource.back() == '/')
+		return (this->_parse_resource("/" + this->_route.index));
+	return ("." + this->_route.root + resource);
 }
 
 std::vector<std::byte>	VHost::_get_err_page(const HTTPStatus &code) const

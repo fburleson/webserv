@@ -51,6 +51,12 @@ typedef struct	s_server
 	std::vector<size_t>	listens;
 }		t_server;
 
+typedef struct	s_route
+{
+	std::string	root;
+	std::string	index;
+}		t_route;
+
 typedef struct	s_httprequest
 {
 	HTTPMethod				method;

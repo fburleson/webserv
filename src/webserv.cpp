@@ -21,7 +21,7 @@ int	main(int argc, char **argv)
 	add_socket(server, 0, 9996);
 	add_socket(server, 0, 9995);
 	virtual_host.set_err_page(HTTP_BAD_METHOD, "./res/custom_error.html");
-	virtual_host.set_root("static");
+	virtual_host.set_root("/static");
 	while (running)
 	{
 		poll_server(server);
