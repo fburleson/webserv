@@ -30,6 +30,11 @@ void	VHost::set_max_body_size(const size_t &max_body_size)
 	this->_max_body_size = max_body_size;
 }
 
+void	VHost::allow_method(const HTTPMethod &method)
+{
+	this->_route.allowed_methods.insert(method);
+}
+
 std::string	VHost::_parse_resource(const std::string &resource) const
 {
 	if (resource.back() == '/')
@@ -54,6 +59,13 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 	if (request.version != response.version)
 	{
 		response.status = HTTP_BAD_VERSION;
+		response.body = this->_get_err_page(HTTP_BAD_VERSION);
+		return (response);
+	}
+	if (this->_route.allowed_methods.find(request.method) == this->_route.allowed_methods.end())
+	{
+		response.status = HTTP_BAD_METHOD;
+		response.body = this->_get_err_page(HTTP_BAD_METHOD);
 		return (response);
 	}
 	if (request.head.find("Content-Length") != request.head.end())
@@ -61,18 +73,23 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		if ((unsigned int)std::atoi(request.head.at("Content-Length").c_str()) > this->_max_body_size)
 		{
 			response.status = HTTP_TOO_LARGE;
+			response.body = this->_get_err_page(HTTP_TOO_LARGE);
+			response.head.insert({"Content-Type", "text/html"});
 			return (response);
 		}
 	}
 	if (request.body.size() > this->_max_body_size)
 	{
 		response.status = HTTP_TOO_LARGE;
+		response.body = this->_get_err_page(HTTP_TOO_LARGE);
+		response.head.insert({"Content-Type", "text/html"});
 		return (response);
 	}
 	if (!this->_route.http_redirect.empty())
 	{
 		response.status = HTTP_PERM_MOVE;
 		response.head.insert({"Location", this->_route.http_redirect});
+		response.head.insert({"Content-Type", "text/html"});
 		return (response);
 	}
 	if (request.method == HTTP_GET)
@@ -87,7 +104,6 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		response.body = this->_get_err_page(HTTP_BAD_METHOD);
 		response.head.insert({"Content-Type", "text/html"});
 	}
-	response.head.insert({"Content-Length", std::to_string(response.body.size())});
 	return (response);
 }
 

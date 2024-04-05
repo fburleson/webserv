@@ -39,13 +39,14 @@ static std::string	format_response(const t_httpresponse &response)
 	return (data.str());
 }
 
-void	send_response(t_httpresponse &http_response)
+void	send_response(t_httpresponse &response)
 {
 	std::string	formatted;
 
-	http_response.message = process_message(http_response.status);
-	formatted = format_response(http_response);
-	if (send(http_response.client.fd, formatted.c_str(), formatted.size(), 0) == -1)
+	response.message = process_message(response.status);
+	response.head.insert({"Content-Length", std::to_string(response.body.size())});
+	formatted = format_response(response);
+	if (send(response.client.fd, formatted.c_str(), formatted.size(), 0) == -1)
 		std::cerr << " send(): " << strerror(errno) << std::endl;
 }
 

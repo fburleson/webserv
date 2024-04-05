@@ -22,7 +22,7 @@ int	main(int argc, char **argv)
 	add_socket(server, 0, 9995);
 	virtual_host.set_err_page(HTTP_BAD_METHOD, "./res/custom_error.html");
 	virtual_host.set_root("/static");
-	virtual_host.set_redirect("http://youtube.com");
+	virtual_host.allow_method(HTTP_GET);
 	while (running)
 	{
 		poll_server(server);

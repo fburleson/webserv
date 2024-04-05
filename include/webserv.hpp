@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <set>
 #include <map>
 #include <unistd.h>
 #include <fcntl.h>
@@ -54,9 +55,10 @@ typedef struct	s_server
 
 typedef struct	s_route
 {
-	std::string	root;
-	std::string	index;
-	std::string	http_redirect;
+	std::string			root;
+	std::string			index;
+	std::string			http_redirect;
+	std::set<HTTPMethod>		allowed_methods;
 }		t_route;
 
 typedef struct	s_httprequest
@@ -108,7 +110,7 @@ std::map<std::string, std::string>	parse_head(const std::string &head);
 
 std::vector<std::byte>	stobyte(const std::string &body);
 std::vector<std::byte>	ftobyte(const std::string &file);
-void			send_response(t_httpresponse &http_response);
+void			send_response(t_httpresponse &response);
 std::string		process_message(const HTTPStatus &code);
 std::vector<std::byte>	generate_err_page(const HTTPStatus &code);
 
