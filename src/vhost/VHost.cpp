@@ -2,7 +2,7 @@
 
 VHost::VHost(void)
 {
-	this->_route.root = ".";
+	this->_route.root = "/";
 	this->_route.index = "index.html";
 	this->_max_body_size = 1024;
 }
@@ -39,7 +39,7 @@ std::string	VHost::_parse_resource(const std::string &resource) const
 {
 	if (resource.back() == '/')
 		return (this->_parse_resource("/" + this->_route.index));
-	return ("." + this->_route.root + resource);
+	return (this->_route.root + resource);
 }
 
 std::vector<std::byte>	VHost::_get_err_page(const HTTPStatus &code) const
