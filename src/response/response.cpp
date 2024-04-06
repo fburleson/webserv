@@ -30,9 +30,9 @@ static std::string	format_response(const t_httpresponse &response)
 	
 	data << response.version << ' ';
 	data << response.status << ' ';
-	data << response.message << '\n';
+	data << response.message << "\r\n";
 	for (const auto &[key, value] : response.head)
-		data << key << ':' << value << '\n';
+		data << key << ':' << value << '\r\n';
 	data << '\n';
 	for (const std::byte &byte : response.body)
       		data << (char)byte;
