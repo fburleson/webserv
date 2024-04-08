@@ -15,6 +15,11 @@ void	VHost::set_root(const std::string &root)
 	this->_route.root = root;
 }
 
+void	VHost::set_index(const std::string &index)
+{
+	this->_route.index = index;
+}
+
 void	VHost::set_redirect(const std::string &url)
 {
 	this->_route.http_redirect = url;
