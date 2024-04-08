@@ -1,7 +1,8 @@
 #include "VHost.hpp"
 
-void	VHost::_process_get_method(const t_httprequest &request, t_httpresponse &response) const
+t_httpresponse	VHost::_process_get_method(const t_httprequest &request) const
 {
+	t_httpresponse	response;
 	std::string	resource = this->_parse_resource(request.resource);
 
 	if (!path_exists(resource))
@@ -12,13 +13,15 @@ void	VHost::_process_get_method(const t_httprequest &request, t_httpresponse &re
 	else
 	{
 		response.status = HTTP_OK;
-		response.body = ftobyte(this->_parse_resource(request.resource));
+		response.body = ftobyte(resource);
 		response.head.insert({"Content-Location", resource});
 	}
+	return (response);
 }
 
-void	VHost::_process_post_method(const t_httprequest &request, t_httpresponse &response) const
+t_httpresponse	VHost::_process_post_method(const t_httprequest &request) const
 {
+	t_httpresponse	response;
 	std::string	resource;
 
 	if (request.head.find("Expect") != request.head.end())
@@ -26,7 +29,7 @@ void	VHost::_process_post_method(const t_httprequest &request, t_httpresponse &r
 		if (request.head.at("Expect") == "100-continue")
 		{
 			response.status = HTTP_CONTINUE;
-			return ;
+			return (response);
 		}
 	}
 	resource = this->_parse_resource(request.resource);
@@ -36,15 +39,22 @@ void	VHost::_process_post_method(const t_httprequest &request, t_httpresponse &r
 		new_file << (char)byte;
 	response.status = HTTP_NO_CONTENT;
 	response.head.insert({"Content-Location", resource});
+	return (response);
 }
 
-void	VHost::_process_delete_method(const t_httprequest &request, t_httpresponse &response) const
+t_httpresponse	VHost::_process_delete_method(const t_httprequest &request) const
 {
-	int	status = std::remove(this->_parse_resource(request.resource).c_str());	
+	t_httpresponse	response;
+	std::string	resource = this->_parse_resource(request.resource);
+	int	status = std::remove(resource.c_str());	
 	
 	if (status != 0)
 		response.status = HTTP_NOT_FOUND;
 	if (status == 0)
+	{
 		response.status = HTTP_NO_CONTENT;
+		response.head.insert({"Content-Location", resource});
+	}
+	return (response);
 }
 

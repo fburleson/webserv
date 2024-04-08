@@ -89,7 +89,7 @@ typedef struct	s_ip
 	uint8_t	d;
 }		t_ip;
 
-//	socket.cpp
+//	SOCKET
 
 pollfd					open_listen_socket(const uint32_t &ip, const uint16_t &port);
 pollfd					open_connection_socket(int socket_fd);
@@ -101,18 +101,19 @@ void	poll_server(t_server &server);
 void	add_connection(t_server &server, const pollfd &socket, std::vector<size_t> &connections);
 
 
-//	request.cpp
+//	REQUEST
 
 t_httprequest				parse_request(const std::string &request);
 std::map<std::string, std::string>	parse_head(const std::string &head);
 
-//	REPONSE
+//	RESPONSE
 
 std::vector<std::byte>	stobyte(const std::string &body);
 std::vector<std::byte>	ftobyte(const std::string &file);
 void			send_response(t_httpresponse &response);
 std::string		process_message(const HTTPStatus &code);
 std::vector<std::byte>	generate_err_page(const HTTPStatus &code);
+bool			is_method_allowed(const HTTPMethod &method, const t_route &route);
 
 //	UTIL
 

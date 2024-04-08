@@ -21,7 +21,7 @@ int	main(int argc, char **argv)
 	add_socket(server, 0, 9996);
 	add_socket(server, 0, 9995);
 	virtual_host.set_err_page(HTTP_BAD_METHOD, "./res/custom_error.html");
-	virtual_host.set_root("/home/jburleson/documents/codam/webserv2/empty");
+	virtual_host.set_root("/home/jburleson/documents/codam/webserv2/static");
 	virtual_host.allow_method(HTTP_GET);
 	virtual_host.allow_method(HTTP_POST);
 	while (running)

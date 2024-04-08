@@ -40,3 +40,8 @@ std::vector<std::byte>	generate_err_page(const HTTPStatus &code)
 	return (stobyte(buffer.str()));
 }
 
+bool	is_method_allowed(const HTTPMethod &method, const t_route &route)
+{
+	return (route.allowed_methods.find(method) != route.allowed_methods.end());
+}
+

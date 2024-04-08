@@ -40,6 +40,18 @@ void	VHost::allow_method(const HTTPMethod &method)
 	this->_route.allowed_methods.insert(method);
 }
 
+bool	VHost::_is_too_large(const t_httprequest &request) const
+{
+	if (request.head.find("Content-Length") != request.head.end())
+	{
+		if ((unsigned int)std::atoi(request.head.at("Content-Length").c_str()) > this->_max_body_size)
+			return (true);
+	}
+	if (request.body.size() > this->_max_body_size)
+		return (true);
+	return (false);
+}
+
 std::string	VHost::_parse_resource(const std::string &resource) const
 {
 	if (resource.back() == '/')
@@ -54,61 +66,47 @@ std::vector<std::byte>	VHost::_get_err_page(const HTTPStatus &code) const
 	return (generate_err_page(code));
 }
 
+t_httpresponse	VHost::_process_error(const HTTPStatus &code) const
+{
+	t_httpresponse	response;
+
+	response.status = code;
+	response.body = this->_get_err_page(code);
+	response.head.insert({"Content-Type", "text/html"});
+	return (response);
+}
+
+t_httpresponse	VHost::_process_http_redirect() const
+{
+	t_httpresponse	response;
+
+	response.status = HTTP_PERM_MOVE;
+	response.head.insert({"Location", this->_route.http_redirect});
+	return (response);
+}
+
 t_httpresponse	VHost::process_request(const t_httprequest &request) const
 {
 	t_httpresponse	response;
-	
-	response.version = HTTP_VERSION;
-	response.status = HTTP_INTERNAL_ERROR;
-	response.client = request.client;
-	if (request.version != response.version)
-	{
-		response.status = HTTP_BAD_VERSION;
-		response.body = this->_get_err_page(HTTP_BAD_VERSION);
-		return (response);
-	}
-	if (this->_route.allowed_methods.find(request.method) == this->_route.allowed_methods.end())
-	{
-		response.status = HTTP_BAD_METHOD;
-		response.body = this->_get_err_page(HTTP_BAD_METHOD);
-		return (response);
-	}
-	if (request.head.find("Content-Length") != request.head.end())
-	{
-		if ((unsigned int)std::atoi(request.head.at("Content-Length").c_str()) > this->_max_body_size)
-		{
-			response.status = HTTP_TOO_LARGE;
-			response.body = this->_get_err_page(HTTP_TOO_LARGE);
-			response.head.insert({"Content-Type", "text/html"});
-			return (response);
-		}
-	}
-	if (request.body.size() > this->_max_body_size)
-	{
-		response.status = HTTP_TOO_LARGE;
-		response.body = this->_get_err_page(HTTP_TOO_LARGE);
-		response.head.insert({"Content-Type", "text/html"});
-		return (response);
-	}
-	if (!this->_route.http_redirect.empty())
-	{
-		response.status = HTTP_PERM_MOVE;
-		response.head.insert({"Location", this->_route.http_redirect});
-		response.head.insert({"Content-Type", "text/html"});
-		return (response);
-	}
-	if (request.method == HTTP_GET)
-		this->_process_get_method(request, response);
+
+	if (request.version != HTTP_VERSION)
+		response = this->_process_error(HTTP_BAD_VERSION);
+	else if (!is_method_allowed(request.method, this->_route))
+		response = this->_process_error(HTTP_BAD_METHOD);
+	else if (this->_is_too_large(request))
+		response = this->_process_error(HTTP_TOO_LARGE);
+	else if (!this->_route.http_redirect.empty())
+		response = this->_process_http_redirect();
+	else if (request.method == HTTP_GET)
+		response = this->_process_get_method(request);
 	else if (request.method == HTTP_POST)
-		this->_process_post_method(request, response);
+		response = this->_process_post_method(request);
 	else if (request.method == HTTP_DELETE)
-		this->_process_delete_method(request, response);
-	else
-	{
-		response.status = HTTP_BAD_METHOD;
-		response.body = this->_get_err_page(HTTP_BAD_METHOD);
-		response.head.insert({"Content-Type", "text/html"});
-	}
+		response = this->_process_delete_method(request);
+	response.version = HTTP_VERSION;
+	response.client = request.client;
+	response.message = process_message(response.status);
+	response.head.insert({"Content-Length", std::to_string(response.body.size())});
 	return (response);
 }
 
