@@ -4,7 +4,7 @@ void	VHost::_process_get_method(const t_httprequest &request, t_httpresponse &re
 {
 	std::string	resource = this->_parse_resource(request.resource);
 
-	if (!file_exists(resource))
+	if (!path_exists(resource))
 	{
 		response.status = HTTP_NOT_FOUND;
 		response.body = this->_get_err_page(HTTP_NOT_FOUND);

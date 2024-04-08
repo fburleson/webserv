@@ -118,5 +118,5 @@ std::vector<std::byte>	generate_err_page(const HTTPStatus &code);
 
 int					error(const std::string &msg, const int &err_code);
 uint32_t				ip(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
-bool					file_exists(const std::string &path);
+bool					path_exists(const std::string &path);
 
