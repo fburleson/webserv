@@ -4,6 +4,7 @@ VHost::VHost(void)
 {
 	this->_route.root = "/";
 	this->_route.index = "index.html";
+	this->_route.autoindex = false;
 	this->_max_body_size = 1024;
 }
 
@@ -18,6 +19,11 @@ void	VHost::set_root(const std::string &root)
 void	VHost::set_index(const std::string &index)
 {
 	this->_route.index = index;
+}
+
+void	VHost::set_autoindex(const bool &autoindex)
+{
+	this->_route.autoindex = autoindex;
 }
 
 void	VHost::set_redirect(const std::string &url)
@@ -54,8 +60,13 @@ bool	VHost::_is_too_large(const t_httprequest &request) const
 
 std::string	VHost::_parse_resource(const std::string &resource) const
 {
+	if (this->_route.autoindex)
+	{
+		if (path_exists(this->_route.root + resource))
+			return (this->_route.root + resource);
+	}
 	if (resource.back() == '/')
-		return (this->_parse_resource("/" + this->_route.index));
+		return (this->_parse_resource('/' + this->_route.index));
 	return (this->_route.root + resource);
 }
 

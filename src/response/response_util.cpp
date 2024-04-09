@@ -40,6 +40,39 @@ std::vector<std::byte>	generate_err_page(const HTTPStatus &code)
 	return (stobyte(buffer.str()));
 }
 
+std::vector<std::byte>	generate_dir_list(const std::string &resource, const std::string &root)
+{
+	std::stringstream	buffer;
+	std::string		path = root + resource;
+	std::string		current_path;
+	
+	buffer << "<!DOCTYPE html>";
+	buffer << "<html>";
+	buffer << "<head><title>Index of " << resource << "</title></head>";
+	buffer << "<body>";
+	buffer << "<h1>Index of " << resource << "</h1>";
+	buffer << "<hr>";
+	current_path = std::filesystem::path(resource).parent_path().parent_path();
+	if (current_path.back() != '/')
+		current_path += "/";
+	buffer << "<a href=" << current_path << ">../" << "</a><br>";
+	for (const auto &entry : std::filesystem::directory_iterator(path))
+	{
+		if (entry.is_directory())
+		{
+			current_path = entry.path().filename();
+			current_path += "/";
+		}
+		else
+			current_path = entry.path().filename();
+		buffer << "<a href=" << current_path << ">" << current_path << "</a><br>";
+	}
+	buffer << "<hr>";
+	buffer << "</body>";
+	buffer << "</html>";
+	return (stobyte(buffer.str()));
+}
+
 bool	is_method_allowed(const HTTPMethod &method, const t_route &route)
 {
 	return (route.allowed_methods.find(method) != route.allowed_methods.end());

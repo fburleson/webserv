@@ -28,6 +28,7 @@ class	VHost
 
 		void			set_root(const std::string &root);
 		void			set_index(const std::string &index);
+		void			set_autoindex(const bool &autoindex);
 		void			set_redirect(const std::string &url);
 		void			allow_method(const HTTPMethod &method);
 		void			set_err_page(const HTTPStatus &code, const std::string &file);

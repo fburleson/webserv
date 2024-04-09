@@ -5,6 +5,13 @@ t_httpresponse	VHost::_process_get_method(const t_httprequest &request) const
 	t_httpresponse	response;
 	std::string	resource = this->_parse_resource(request.resource);
 
+	if (resource.back() == '/')
+	{
+		response.status = HTTP_OK;
+		response.body = generate_dir_list(request.resource, this->_route.root);
+		response.head.insert({"Content-Type", "text/html"});
+		return (response);
+	}
 	if (!path_exists(resource))
 	{
 		response.status = HTTP_NOT_FOUND;

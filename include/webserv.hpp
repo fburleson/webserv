@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -8,10 +9,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <poll.h>
+#include <dirent.h>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
-// #include "VHost.hpp"
 
 #define	OK		0
 #define	ERR_NO_CONFIG	2
@@ -49,16 +51,17 @@ enum HTTPStatus {
 
 typedef struct	s_server
 {
-	std::vector<pollfd>	sockets;
-	std::vector<size_t>	listens;
+	std::vector<pollfd>			sockets;
+	std::vector<size_t>			listens;
 }		t_server;
 
 typedef struct	s_route
 {
-	std::string			root;
-	std::string			index;
-	std::string			http_redirect;
-	std::set<HTTPMethod>		allowed_methods;
+	std::string				root;
+	std::string				index;
+	bool					autoindex;
+	std::string				http_redirect;
+	std::set<HTTPMethod>			allowed_methods;
 }		t_route;
 
 typedef struct	s_httprequest
@@ -96,9 +99,9 @@ pollfd					open_connection_socket(int socket_fd);
 
 //	SERVER
 
-void	add_socket(t_server &server, const uint32_t &ip, const uint16_t &port);
-void	poll_server(t_server &server);
-void	add_connection(t_server &server, const pollfd &socket, std::vector<size_t> &connections);
+void					add_socket(t_server &server, const uint32_t &ip, const uint16_t &port);
+void					poll_server(t_server &server);
+void					add_connection(t_server &server, const pollfd &socket, std::vector<size_t> &connections);
 
 
 //	REQUEST
@@ -108,12 +111,13 @@ std::map<std::string, std::string>	parse_head(const std::string &head);
 
 //	RESPONSE
 
-std::vector<std::byte>	stobyte(const std::string &body);
-std::vector<std::byte>	ftobyte(const std::string &file);
-void			send_response(t_httpresponse &response);
-std::string		process_message(const HTTPStatus &code);
-std::vector<std::byte>	generate_err_page(const HTTPStatus &code);
-bool			is_method_allowed(const HTTPMethod &method, const t_route &route);
+std::vector<std::byte>			stobyte(const std::string &body);
+std::vector<std::byte>			ftobyte(const std::string &file);
+void					send_response(t_httpresponse &response);
+std::string				process_message(const HTTPStatus &code);
+std::vector<std::byte>			generate_err_page(const HTTPStatus &code);
+std::vector<std::byte>			generate_dir_list(const std::string &resource, const std::string &root);
+bool					is_method_allowed(const HTTPMethod &method, const t_route &route);
 
 //	UTIL
 
