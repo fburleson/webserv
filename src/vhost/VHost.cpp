@@ -62,10 +62,10 @@ std::string	VHost::_parse_resource(const std::string &resource) const
 {
 	if (this->_route.autoindex)
 	{
-		if (path_exists(this->_route.root + resource))
+		if (std::filesystem::is_directory(std::filesystem::path(this->_route.root + resource)))
 			return (this->_route.root + resource);
 	}
-	if (resource.back() == '/')
+	if (std::filesystem::is_directory(std::filesystem::path(this->_route.root + resource)))
 		return (this->_parse_resource('/' + this->_route.index));
 	return (this->_route.root + resource);
 }
