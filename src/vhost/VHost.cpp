@@ -58,14 +58,26 @@ bool	VHost::_is_too_large(const t_httprequest &request) const
 	return (false);
 }
 
+bool	VHost::_is_incomplete_dir(const t_httprequest &request) const
+{
+	fs::path	path = fs::path(this->_route.root + request.resource);
+
+	if (fs::is_directory(path))
+	{
+		if (request.resource.back() != '/')
+			return (true);
+	}
+	return (false);
+}
+
 std::string	VHost::_parse_resource(const std::string &resource) const
 {
 	if (this->_route.autoindex)
 	{
-		if (std::filesystem::is_directory(std::filesystem::path(this->_route.root + resource)))
+		if (fs::is_directory(fs::path(this->_route.root + resource)))
 			return (this->_route.root + resource);
 	}
-	if (std::filesystem::is_directory(std::filesystem::path(this->_route.root + resource)))
+	if (fs::is_directory(fs::path(this->_route.root + resource)))
 		return (this->_parse_resource('/' + this->_route.index));
 	return (this->_route.root + resource);
 }
@@ -96,6 +108,15 @@ t_httpresponse	VHost::_process_http_redirect() const
 	return (response);
 }
 
+t_httpresponse	VHost::_process_dir_redirect(const t_httprequest &request) const
+{
+	t_httpresponse	response;
+
+	response.status = HTTP_PERM_MOVE;
+	response.head.insert({"Location", request.resource + '/'});
+	return (response);
+}
+
 t_httpresponse	VHost::process_request(const t_httprequest &request) const
 {
 	t_httpresponse	response;
@@ -108,6 +129,8 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		response = this->_process_error(HTTP_TOO_LARGE);
 	else if (!this->_route.http_redirect.empty())
 		response = this->_process_http_redirect();
+	else if (this->_is_incomplete_dir(request))
+		response = this->_process_dir_redirect(request);
 	else if (request.method == HTTP_GET)
 		response = this->_process_get_method(request);
 	else if (request.method == HTTP_POST)

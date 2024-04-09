@@ -5,7 +5,7 @@ t_httpresponse	VHost::_process_get_method(const t_httprequest &request) const
 	t_httpresponse	response;
 	std::string	resource = this->_parse_resource(request.resource);
 
-	if (std::filesystem::is_directory(std::filesystem::path(resource)))
+	if (fs::is_directory(fs::path(resource)))
 	{
 		response.status = HTTP_OK;
 		response.body = generate_dir_list(request.resource, this->_route.root);
@@ -53,7 +53,7 @@ t_httpresponse	VHost::_process_delete_method(const t_httprequest &request) const
 {
 	t_httpresponse	response;
 	std::string	resource = this->_parse_resource(request.resource);
-	int	status = std::remove(resource.c_str());	
+	int		status = std::remove(resource.c_str());	
 	
 	if (status != 0)
 		response.status = HTTP_NOT_FOUND;

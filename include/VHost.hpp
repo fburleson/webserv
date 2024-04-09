@@ -15,9 +15,11 @@ class	VHost
 		std::string		_parse_resource(const std::string &resource) const;
 		std::vector<std::byte>	_get_err_page(const HTTPStatus &code) const;
 		bool			_is_too_large(const t_httprequest &request) const;
+		bool			_is_incomplete_dir(const t_httprequest &request) const;
 
 		t_httpresponse		_process_error(const HTTPStatus &code) const;
 		t_httpresponse		_process_http_redirect() const;
+		t_httpresponse		_process_dir_redirect(const t_httprequest &request) const;
 		t_httpresponse		_process_get_method(const t_httprequest &request) const;
 		t_httpresponse		_process_post_method(const t_httprequest &request) const;
 		t_httpresponse		_process_delete_method(const t_httprequest &request) const;

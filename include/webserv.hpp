@@ -15,6 +15,8 @@
 #include <sys/stat.h>
 #include <netinet/in.h>
 
+namespace fs = std::filesystem;
+
 #define	OK		0
 #define	ERR_NO_CONFIG	2
 #define	ERR_NOP_SOCK	3

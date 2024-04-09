@@ -43,7 +43,7 @@ std::vector<std::byte>	generate_err_page(const HTTPStatus &code)
 std::vector<std::byte>	generate_dir_list(const std::string &resource, const std::string &root)
 {
 	std::stringstream	buffer;
-	std::string		path = root + resource;
+	std::string		dir = root + resource;
 	std::string		current_path;
 	
 	buffer << "<!DOCTYPE html>";
@@ -52,16 +52,16 @@ std::vector<std::byte>	generate_dir_list(const std::string &resource, const std:
 	buffer << "<body>";
 	buffer << "<h1>Index of " << resource << "</h1>";
 	buffer << "<hr>";
-	current_path = std::filesystem::path(resource).parent_path().parent_path();
+	current_path = fs::path(resource).parent_path().parent_path();
 	if (current_path.back() != '/')
-		current_path += "/";
+		current_path += '/';
 	buffer << "<a href=" << current_path << ">../" << "</a><br>";
-	for (const auto &entry : std::filesystem::directory_iterator(path))
+	for (const auto &entry : fs::directory_iterator(dir))
 	{
 		if (entry.is_directory())
 		{
 			current_path = entry.path().filename();
-			current_path += "/";
+			current_path += '/';
 		}
 		else
 			current_path = entry.path().filename();
