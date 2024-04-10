@@ -1,5 +1,16 @@
 #include "webserv.hpp"
 
+std::string	parse_resource(const std::string &url, const t_route &route)
+{
+	std::string	parsed;
+
+	if (url.length() > route.alias.length())
+		parsed = route.root + url.substr(route.alias.length());
+	else
+		parsed = route.root;
+	return (parsed);
+}
+
 std::string	process_message(const HTTPStatus &code)
 {
 	if (code == HTTP_OK)
@@ -42,31 +53,23 @@ std::vector<std::byte>	generate_err_page(const HTTPStatus &code)
 	return (stobyte(buffer.str()));
 }
 
-std::vector<std::byte>	generate_dir_list(const std::string &resource, const std::string &root)
+std::vector<std::byte>	generate_dir_list(const t_httprequest &request, const t_route &route)
 {
 	std::stringstream	buffer;
-	std::string		dir = root + resource;
+	std::string		dir = parse_resource(request.url, route);
 	std::string		current_path;
 	
 	buffer << "<!DOCTYPE html>";
 	buffer << "<html>";
-	buffer << "<head><title>Index of " << resource << "</title></head>";
+	buffer << "<head><title>Index of " << request.url << "</title></head>";
 	buffer << "<body>";
-	buffer << "<h1>Index of " << resource << "</h1>";
+	buffer << "<h1>Index of " << request.url << "</h1>";
 	buffer << "<hr>";
-	current_path = fs::path(resource).parent_path().parent_path();
-	if (current_path.back() != '/')
-		current_path += '/';
-	buffer << "<a href=" << current_path << ">../" << "</a><br>";
+	if (route.root + '/' != dir)
+		buffer << "<a href=" << fs::path(request.url).parent_path().parent_path() << ">../" << "</a><br>";
 	for (const auto &entry : fs::directory_iterator(dir))
 	{
-		if (entry.is_directory())
-		{
-			current_path = entry.path().filename();
-			current_path += '/';
-		}
-		else
-			current_path = entry.path().filename();
+		current_path = entry.path().filename();
 		buffer << "<a href=" << current_path << ">" << current_path << "</a><br>";
 	}
 	buffer << "<hr>";

@@ -11,6 +11,7 @@ int	main(int argc, char **argv)
 	t_httprequest		request;
 	VHost			virtual_host;
 	t_httpresponse		response;
+	t_route			alt_route;
 
 	argv = argv;
 	if (argc <= 1)
@@ -25,6 +26,12 @@ int	main(int argc, char **argv)
 	virtual_host.set_autoindex(true);
 	virtual_host.allow_method(HTTP_GET);
 	virtual_host.allow_method(HTTP_POST);
+	alt_route.index = "/index.html";
+	alt_route.alias = "/alt";
+	alt_route.root = "/home/jburleson/documents/codam/webserv2/res";
+	alt_route.autoindex = true;
+	alt_route.allowed_methods.insert(HTTP_GET);
+	virtual_host.add_route(alt_route);
 	while (running)
 	{
 		poll_server(server);

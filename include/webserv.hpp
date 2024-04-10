@@ -64,6 +64,7 @@ typedef struct	s_route
 	bool					autoindex;
 	std::string				redirect;
 	std::set<HTTPMethod>			allowed_methods;
+	std::string				alias;
 }		t_route;
 
 typedef struct	s_httprequest
@@ -116,8 +117,9 @@ std::vector<std::byte>			stobyte(const std::string &body);
 std::vector<std::byte>			ftobyte(const std::string &file);
 void					send_response(t_httpresponse &response);
 std::string				process_message(const HTTPStatus &code);
+std::string				parse_resource(const std::string &url, const t_route &route);
 std::vector<std::byte>			generate_err_page(const HTTPStatus &code);
-std::vector<std::byte>			generate_dir_list(const std::string &resource, const std::string &root);
+std::vector<std::byte>			generate_dir_list(const t_httprequest &request, const t_route &route);
 t_httpresponse				process_redirect(const std::string &url);
 std::string				get_content_type(const std::string &resource);
 bool					is_method_allowed(const HTTPMethod &method, const t_route &route);

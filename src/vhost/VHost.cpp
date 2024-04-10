@@ -45,6 +45,11 @@ void	VHost::allow_method(const HTTPMethod &method)
 	this->_default_route.allowed_methods.insert(method);
 }
 
+void	VHost::add_route(const t_route &route)
+{
+	this->_routes.push_back(route);
+}
+
 bool	VHost::_is_too_large(const t_httprequest &request) const
 {
 	if (request.head.find("Content-Length") != request.head.end())
@@ -59,7 +64,7 @@ bool	VHost::_is_too_large(const t_httprequest &request) const
 
 bool	VHost::_is_incomplete_dir(const t_httprequest &request, const t_route &route) const
 {
-	fs::path	path = fs::path(route.root + request.url);
+	fs::path	path = fs::path(parse_resource(request.url, route));
 
 	if (fs::is_directory(path))
 	{
@@ -69,16 +74,23 @@ bool	VHost::_is_incomplete_dir(const t_httprequest &request, const t_route &rout
 	return (false);
 }
 
-std::string	VHost::_parse_resource(const std::string &url, const t_route &route) const
-{
-	return (route.root + url);
-}
-
 std::vector<std::byte>	VHost::_get_err_page(const HTTPStatus &code) const
 {
 	if (this->_err_pages.find(code) != this->_err_pages.end())
 		return (ftobyte(this->_err_pages.at(code)));
 	return (generate_err_page(code));
+}
+
+t_route	VHost::_get_route(const t_httprequest &request) const
+{
+	t_route	selected_route = this->_default_route;
+
+	for (const t_route &route : this->_routes)
+	{
+		if (request.url.starts_with(route.alias))
+			selected_route = route;
+	}
+	return (selected_route);
 }
 
 t_httpresponse	VHost::_process_error(const HTTPStatus &code) const
@@ -94,7 +106,7 @@ t_httpresponse	VHost::_process_error(const HTTPStatus &code) const
 t_httpresponse	VHost::process_request(const t_httprequest &request) const
 {
 	t_httpresponse	response;
-	t_route		route = this->_default_route;
+	t_route		route = this->_get_route(request);
 
 	if (request.version != HTTP_VERSION)
 		response = this->_process_error(HTTP_BAD_VERSION);
