@@ -84,6 +84,35 @@ t_httpresponse	process_redirect(const std::string &url)
 	return (response);
 }
 
+std::string	get_content_type(const std::string &resource)
+{
+	std::string	extension = fs::path(resource).extension();
+
+	if (extension == ".pdf")
+		return ("application/pdf");
+	if (extension == ".json")
+		return ("application/json");
+	if (extension == ".gif")
+		return ("image/gif");
+	if (extension == ".jpeg")
+		return ("image/jpeg");
+	if (extension == ".png")
+		return ("image/png");
+	if (extension == ".css")
+		return ("text/css");
+	if (extension == ".html")
+		return ("text/html");
+	if (extension == ".js")
+		return ("text/javascript");
+	if (extension == ".txt")
+		return ("text/plain");
+	if (extension == ".mp4")
+		return ("video/mp4");
+	if (extension == ".webm")
+		return ("video/webm");
+	return ("application/octet-stream");
+}
+
 bool	is_method_allowed(const HTTPMethod &method, const t_route &route)
 {
 	return (route.allowed_methods.find(method) != route.allowed_methods.end());

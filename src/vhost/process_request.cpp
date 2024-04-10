@@ -19,13 +19,13 @@ t_httpresponse	VHost::_process_get_method(const t_httprequest &request, const t_
 	}
 	if (!fs::exists(path))
 	{
-		response.status = HTTP_NOT_FOUND;
-		response.body = this->_get_err_page(HTTP_NOT_FOUND);
+		response = this->_process_error(HTTP_NOT_FOUND);
 		return (response);
 	}
 	response.status = HTTP_OK;
 	response.body = ftobyte(resource);
 	response.head.insert({"Content-Location", resource});
+	response.head.insert({"Content-Type", get_content_type(resource)});
 	return (response);
 }
 

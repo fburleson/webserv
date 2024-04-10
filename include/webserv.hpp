@@ -119,6 +119,7 @@ std::string				process_message(const HTTPStatus &code);
 std::vector<std::byte>			generate_err_page(const HTTPStatus &code);
 std::vector<std::byte>			generate_dir_list(const std::string &resource, const std::string &root);
 t_httpresponse				process_redirect(const std::string &url);
+std::string				get_content_type(const std::string &resource);
 bool					is_method_allowed(const HTTPMethod &method, const t_route &route);
 
 //	UTIL
