@@ -63,7 +63,7 @@ t_httprequest	parse_request(const std::string &request)
 	
 	parsed.method = get_method(request);
 	cidx = skip_next_info(request, cidx);
-	parsed.resource = get_next_info(request.substr(cidx));
+	parsed.url = get_next_info(request.substr(cidx));
 	cidx = skip_next_info(request, cidx);
 	parsed.version = get_next_info(request.substr(cidx));
 	cidx = skip_next_info(request, cidx);

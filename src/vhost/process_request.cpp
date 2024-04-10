@@ -3,7 +3,7 @@
 t_httpresponse	VHost::_process_get_method(const t_httprequest &request, const t_route &route) const
 {
 	t_httpresponse	response;
-	std::string	resource = this->_parse_resource(request.resource, route);
+	std::string	resource = this->_parse_resource(request.url, route);
 	fs::path	path = fs::path(resource);
 	
 	if (resource.back() == '/')
@@ -11,7 +11,7 @@ t_httpresponse	VHost::_process_get_method(const t_httprequest &request, const t_
 		if (route.autoindex && fs::is_directory(path))
 		{
 			response.status = HTTP_OK;
-			response.body = generate_dir_list(request.resource, route.root);
+			response.body = generate_dir_list(request.url, route.root);
 			response.head.insert({"Content-Type", "text/html"});
 			return (response);
 		}
@@ -42,7 +42,7 @@ t_httpresponse	VHost::_process_post_method(const t_httprequest &request, const t
 			return (response);
 		}
 	}
-	resource = this->_parse_resource(request.resource, route);
+	resource = this->_parse_resource(request.url, route);
 	std::ofstream	new_file(resource);
 
 	for (const std::byte &byte : request.body)
@@ -55,7 +55,7 @@ t_httpresponse	VHost::_process_post_method(const t_httprequest &request, const t
 t_httpresponse	VHost::_process_delete_method(const t_httprequest &request, const t_route &route) const
 {
 	t_httpresponse	response;
-	std::string	resource = this->_parse_resource(request.resource, route);
+	std::string	resource = this->_parse_resource(request.url, route);
 	int		status = std::remove(resource.c_str());	
 	
 	if (status != 0)
