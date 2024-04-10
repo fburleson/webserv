@@ -105,7 +105,6 @@ void					add_socket(t_server &server, const uint32_t &ip, const uint16_t &port);
 void					poll_server(t_server &server);
 void					add_connection(t_server &server, const pollfd &socket, std::vector<size_t> &connections);
 
-
 //	REQUEST
 
 t_httprequest				parse_request(const std::string &request);
@@ -119,6 +118,7 @@ void					send_response(t_httpresponse &response);
 std::string				process_message(const HTTPStatus &code);
 std::vector<std::byte>			generate_err_page(const HTTPStatus &code);
 std::vector<std::byte>			generate_dir_list(const std::string &resource, const std::string &root);
+t_httpresponse				process_redirect(const std::string &url);
 bool					is_method_allowed(const HTTPMethod &method, const t_route &route);
 
 //	UTIL

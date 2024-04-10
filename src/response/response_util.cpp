@@ -18,6 +18,8 @@ std::string	process_message(const HTTPStatus &code)
 		return ("No Content");
 	if (code == HTTP_TOO_LARGE)
 		return ("Payload Too Large");
+	if (code == HTTP_PERM_MOVE)
+		return ("Moved Permanently");
 	return ("Internal Server Error");
 }
 
@@ -71,6 +73,15 @@ std::vector<std::byte>	generate_dir_list(const std::string &resource, const std:
 	buffer << "</body>";
 	buffer << "</html>";
 	return (stobyte(buffer.str()));
+}
+
+t_httpresponse	process_redirect(const std::string &url)
+{
+	t_httpresponse	response;
+
+	response.status = HTTP_PERM_MOVE;
+	response.head.insert({"Location", url});
+	return (response);
 }
 
 bool	is_method_allowed(const HTTPMethod &method, const t_route &route)

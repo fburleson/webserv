@@ -4,7 +4,7 @@
 class	VHost
 {
 	private:
-		t_route					_route;
+		t_route					_default_route;
 		std::map<HTTPStatus, std::string>	_err_pages;
 		size_t					_max_body_size;
 
@@ -12,17 +12,15 @@ class	VHost
 
 		VHost	&operator=(const VHost &host);
 
-		std::string		_parse_resource(const std::string &resource) const;
+		std::string		_parse_resource(const std::string &url, const t_route &route) const;
 		std::vector<std::byte>	_get_err_page(const HTTPStatus &code) const;
 		bool			_is_too_large(const t_httprequest &request) const;
-		bool			_is_incomplete_dir(const t_httprequest &request) const;
+		bool			_is_incomplete_dir(const t_httprequest &request, const t_route &route) const;
 
 		t_httpresponse		_process_error(const HTTPStatus &code) const;
-		t_httpresponse		_process_http_redirect() const;
-		t_httpresponse		_process_dir_redirect(const t_httprequest &request) const;
-		t_httpresponse		_process_get_method(const t_httprequest &request) const;
-		t_httpresponse		_process_post_method(const t_httprequest &request) const;
-		t_httpresponse		_process_delete_method(const t_httprequest &request) const;
+		t_httpresponse		_process_get_method(const t_httprequest &request, const t_route &route) const;
+		t_httpresponse		_process_post_method(const t_httprequest &request, const t_route &route) const;
+		t_httpresponse		_process_delete_method(const t_httprequest &request, const t_route &route) const;
 
 	public:
 		VHost(void);
