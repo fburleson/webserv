@@ -27,7 +27,7 @@ void	VHost::set_autoindex(const bool &autoindex)
 
 void	VHost::set_redirect(const std::string &url)
 {
-	this->_default_route.http_redirect = url;
+	this->_default_route.redirect = url;
 }
 
 void	VHost::set_err_page(const HTTPStatus &code, const std::string &file)
@@ -59,11 +59,11 @@ bool	VHost::_is_too_large(const t_httprequest &request) const
 
 bool	VHost::_is_incomplete_dir(const t_httprequest &request, const t_route &route) const
 {
-	fs::path	path = fs::path(route.root + request.resource);
+	fs::path	path = fs::path(route.root + request.url);
 
 	if (fs::is_directory(path))
 	{
-		if (request.resource.back() != '/')
+		if (request.url.back() != '/')
 			return (true);
 	}
 	return (false);
@@ -102,10 +102,10 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		response = this->_process_error(HTTP_BAD_METHOD);
 	else if (this->_is_too_large(request))
 		response = this->_process_error(HTTP_TOO_LARGE);
-	else if (!route.http_redirect.empty())
-		response = process_redirect(route.http_redirect);
+	else if (!route.redirect.empty())
+		response = process_redirect(route.redirect);
 	else if (this->_is_incomplete_dir(request, route))
-		response = process_redirect(request.resource + '/');
+		response = process_redirect(request.url + '/');
 	else if (request.method == HTTP_GET)
 		response = this->_process_get_method(request, route);
 	else if (request.method == HTTP_POST)

@@ -39,16 +39,16 @@ enum HTTPMethod {
 };
 
 enum HTTPStatus {
-	HTTP_CONTINUE = 100,
-	HTTP_OK = 200,
-	HTTP_CREATED = 201,
-	HTTP_NO_CONTENT = 204,
-	HTTP_PERM_MOVE = 301,
-	HTTP_NOT_FOUND = 404,
-	HTTP_BAD_METHOD = 405,
-	HTTP_TOO_LARGE = 413,
-	HTTP_INTERNAL_ERROR = 500,
-	HTTP_BAD_VERSION = 505
+	HTTP_CONTINUE		= 100,
+	HTTP_OK			= 200,
+	HTTP_CREATED		= 201,
+	HTTP_NO_CONTENT		= 204,
+	HTTP_PERM_MOVE		= 301,
+	HTTP_NOT_FOUND		= 404,
+	HTTP_BAD_METHOD		= 405,
+	HTTP_TOO_LARGE		= 413,
+	HTTP_INTERNAL_ERROR	= 500,
+	HTTP_BAD_VERSION	= 505
 };
 
 typedef struct	s_server
@@ -62,14 +62,14 @@ typedef struct	s_route
 	std::string				root;
 	std::string				index;
 	bool					autoindex;
-	std::string				http_redirect;
+	std::string				redirect;
 	std::set<HTTPMethod>			allowed_methods;
 }		t_route;
 
 typedef struct	s_httprequest
 {
 	HTTPMethod				method;
-	std::string				resource;
+	std::string				url;
 	std::string				version;
 	std::map<std::string, std::string>	head;
 	std::vector<std::byte>			body;
@@ -88,10 +88,10 @@ typedef struct	s_httpresponse
 
 typedef struct	s_ip
 {
-	uint8_t	a;
-	uint8_t	b;
-	uint8_t	c;
-	uint8_t	d;
+	uint8_t					byte0;
+	uint8_t					byte1;
+	uint8_t					byte2;
+	uint8_t					byte3;
 }		t_ip;
 
 //	SOCKET
