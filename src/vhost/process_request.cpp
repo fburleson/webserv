@@ -24,7 +24,7 @@ t_httpresponse	VHost::_process_get_method(const t_httprequest &request, const t_
 	}
 	response.status = HTTP_OK;
 	response.body = ftobyte(resource);
-	response.head.insert({"Content-Location", resource});
+	response.head.insert({"Content-Location", request.url});
 	response.head.insert({"Content-Type", get_content_type(resource)});
 	return (response);
 }
@@ -48,7 +48,6 @@ t_httpresponse	VHost::_process_post_method(const t_httprequest &request, const t
 	for (const std::byte &byte : request.body)
 		new_file << (char)byte;
 	response.status = HTTP_NO_CONTENT;
-	response.head.insert({"Content-Location", resource});
 	return (response);
 }
 
@@ -61,10 +60,7 @@ t_httpresponse	VHost::_process_delete_method(const t_httprequest &request, const
 	if (status != 0)
 		response.status = HTTP_NOT_FOUND;
 	if (status == 0)
-	{
 		response.status = HTTP_NO_CONTENT;
-		response.head.insert({"Content-Location", resource});
-	}
 	return (response);
 }
 
