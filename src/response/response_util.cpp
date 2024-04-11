@@ -63,13 +63,39 @@ std::vector<std::byte>	generate_dir_list(const t_httprequest &request, const t_r
 	buffer << "<body>";
 	buffer << "<h1>Index of " << request.url << "</h1>";
 	buffer << "<hr>";
+	buffer << "<table style=\"width:100%\">";
+	buffer << "<tr style=\"padding:0px\">";
+	buffer << "<th style=\"text-align:left\">name</th>";
+	buffer << "<th style=\"text-align:left\">size</th>";
+	buffer << "<th style=\"text-align:left\">last modified</th>";
+	buffer << "</tr>";
 	if (route.root + '/' != dir)
-		buffer << "<a href=" << fs::path(request.url).parent_path().parent_path() << ">../" << "</a><br>";
+	{
+		buffer << "<tr>";
+		buffer << "<td><a href=" << fs::path(request.url).parent_path().parent_path() << ">../" << "</a></td>";
+		buffer << "<td></td>";
+		buffer << "<td>01-01-1990 00:00</td>";
+		buffer << "</tr>";
+	}
 	for (const auto &entry : fs::directory_iterator(dir))
 	{
 		current_path = entry.path().filename();
-		buffer << "<a href=" << current_path << ">" << current_path << "</a><br>";
+		buffer << "<tr>";
+		if (!entry.is_directory())
+		{
+			buffer << "<td><a href=" << current_path << ">" << current_path << "</a></td>";
+			buffer << "<td>" << entry.file_size() << "</td>";
+		}
+		else
+		{
+			current_path += '/';
+			buffer << "<td><a href=" << current_path << ">" << current_path << "</a></td>";
+			buffer << "<td></td>";
+		}
+		buffer << "<td>01-01-1990 00:00</td>";
+		buffer << "</tr>";
 	}
+	buffer << "</table>";
 	buffer << "<hr>";
 	buffer << "</body>";
 	buffer << "</html>";
