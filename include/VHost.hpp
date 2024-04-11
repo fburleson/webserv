@@ -20,6 +20,7 @@ class	VHost
 		bool			_is_incomplete_dir(const t_httprequest &request, const t_route &route) const;
 
 		t_httpresponse		_process_error(const HTTPStatus &code) const;
+		t_httpresponse		_process_bad_method(const HTTPStatus &code, const t_route &route) const;
 		t_httpresponse		_process_get_method(const t_httprequest &request, const t_route &route) const;
 		t_httpresponse		_process_post_method(const t_httprequest &request, const t_route &route) const;
 		t_httpresponse		_process_delete_method(const t_httprequest &request, const t_route &route) const;

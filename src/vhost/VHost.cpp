@@ -103,6 +103,40 @@ t_httpresponse	VHost::_process_error(const HTTPStatus &code) const
 	return (response);
 }
 
+static std::string	method_to_str(const HTTPMethod &method)
+{
+	if (method == HTTP_GET)
+		return ("GET");
+	if (method == HTTP_POST)
+		return ("POST");
+	if (method == HTTP_DELETE)
+		return ("DELETE");
+	return ("UNKNOWN METHOD");
+}
+
+static std::string	format_allowed_methods(const t_route &route)
+{
+	std::stringstream	buffer;
+	
+	for (const HTTPMethod &method : route.allowed_methods)
+	{
+		if (!buffer.str().empty())
+			buffer << ", ";
+		buffer << method_to_str(method);
+	}
+	return (buffer.str());
+}
+
+t_httpresponse	VHost::_process_bad_method(const HTTPStatus &code, const t_route &route) const
+{
+	t_httpresponse	response;
+	std::string	allowed = route.alias;
+
+	response = this->_process_error(code);
+	response.head.insert({"Allow", format_allowed_methods(route)});
+	return (response);
+}
+
 t_httpresponse	VHost::process_request(const t_httprequest &request) const
 {
 	t_httpresponse	response;
@@ -111,7 +145,7 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 	if (request.version != HTTP_VERSION)
 		response = this->_process_error(HTTP_BAD_VERSION);
 	else if (!is_method_allowed(request.method, route))
-		response = this->_process_error(HTTP_BAD_METHOD);
+		response = this->_process_bad_method(HTTP_BAD_METHOD, route);
 	else if (this->_is_too_large(request))
 		response = this->_process_error(HTTP_TOO_LARGE);
 	else if (!route.redirect.empty())
