@@ -15,6 +15,8 @@ t_httpresponse	VHost::_process_get_method(const t_httprequest &request, const t_
 			response.head.insert({"Content-Type", "text/html"});
 			return (response);
 		}
+		if (route.index.empty())
+			return (this->_process_error(HTTP_NOT_FOUND));
 		return (process_redirect(route.alias + route.index));
 	}
 	if (!fs::exists(path))
