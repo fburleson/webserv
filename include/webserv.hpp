@@ -17,6 +17,8 @@
 
 namespace fs = std::filesystem;
 
+#define	SERVER_NAME	"webserv"
+
 #define	OK		0
 #define	ERR_NO_CONFIG	2
 #define	ERR_NOP_SOCK	3

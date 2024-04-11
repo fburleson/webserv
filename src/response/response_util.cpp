@@ -45,7 +45,7 @@ std::vector<std::byte>	generate_err_page(const HTTPStatus &code)
 	buffer << "<body>";
 	buffer << "<center><h1>" << code << " " << message << "</h1></center>";
 	buffer << "<hr>";
-	buffer << "<center><p>webserv</p></center>";
+	buffer << "<center><p>" << SERVER_NAME << "</p></center>";
 	buffer << "</body>";
 	buffer << "</html>";
 	return (stobyte(buffer.str()));

@@ -127,6 +127,7 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 	response.version = HTTP_VERSION;
 	response.client = request.client;
 	response.message = process_message(response.status);
+	response.head.insert({"Server", SERVER_NAME});
 	response.head.insert({"Content-Length", std::to_string(response.body.size())});
 	return (response);
 }
