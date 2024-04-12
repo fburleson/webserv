@@ -11,27 +11,14 @@ int	main(int argc, char **argv)
 	t_httprequest		request;
 	VHost			virtual_host;
 	t_httpresponse		response;
-	t_route			alt_route;
 
 	argv = argv;
 	if (argc <= 1)
 		return (error("no configuration file provided", ERR_NO_CONFIG));
 	add_socket(server, 0, 9999);
-	add_socket(server, 0, 9998);
-	add_socket(server, 0, 9997);
-	add_socket(server, 0, 9996);
-	add_socket(server, 0, 9995);
-	virtual_host.set_err_page(HTTP_BAD_METHOD, "./res/custom_error.html");
-	virtual_host.set_root("/home/jburleson/documents/codam/webserv2/static");
-	virtual_host.set_autoindex(true);
+	add_socket(server, 0, 8888);
+	virtual_host.set_root("/home/jburleson/documents/codam/webserv_website/");
 	virtual_host.allow_method(HTTP_GET);
-	virtual_host.allow_method(HTTP_POST);
-	alt_route.index = "/index.html";
-	alt_route.alias = "/alt";
-	alt_route.root = "/home/jburleson/documents/codam/webserv2/res";
-	alt_route.autoindex = true;
-	alt_route.allowed_methods.insert(HTTP_GET);
-	virtual_host.add_route(alt_route);
 	while (running)
 	{
 		poll_server(server);
