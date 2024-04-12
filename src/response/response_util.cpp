@@ -121,7 +121,7 @@ std::string	get_content_type(const std::string &resource)
 		return ("application/json");
 	if (extension == ".gif")
 		return ("image/gif");
-	if (extension == ".jpeg")
+	if (extension == ".jpeg" || extension == ".jpg")
 		return ("image/jpeg");
 	if (extension == ".png")
 		return ("image/png");
