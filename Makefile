@@ -13,7 +13,6 @@ INCLUDEDIR	=	./include/
 SRCFILES	=	webserv.cpp		\
 			log.cpp			\
 			ip.cpp			\
-			file_util.cpp		\
 			socket.cpp		\
 			server.cpp		\
 			parse_head.cpp		\
