@@ -49,6 +49,11 @@ void	Server::add_connection(const t_socketref &socket)
 	this->_connections.push_back(reference);
 }
 
+void	Server::add_vhost(const uint16_t &port, const VHost &vhost)
+{
+	this->_vhosts[port].push_back(vhost);
+}
+
 void	Server::poll_events(void) const
 {
 	if (poll((pollfd *)&this->_sockets[0], this->_sockets.size(), POLL_TIMEOUT) == -1)
@@ -75,5 +80,16 @@ std::vector<t_socketref>	Server::get_connection_sockets(void) const
 pollfd				Server::get_socket(const t_socketref &ref) const
 {
 	return (this->_sockets[ref.idx]);
+}
+
+t_httpresponse	Server::process_request(const t_httprequest &request, const t_socketref &connection) const
+{
+	t_httpresponse	response;
+	VHost		vhost = this->_fallback_vhost;
+
+	if (this->_vhosts.find(connection.port) != this->_vhosts.end())
+		vhost = this->_vhosts.at(connection.port)[0];
+	response = vhost.process_request(request);
+	return (response);
 }
 

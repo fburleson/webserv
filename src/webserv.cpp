@@ -17,6 +17,7 @@ int	main(int argc, char **argv)
 	server.add_socket(0, 8888);
 	virtual_host.set_root("/home/jburleson/documents/codam/webserv_website/");
 	virtual_host.allow_method(HTTP_GET);
+	server.add_vhost(9999, virtual_host);
 	while (true)
 	{
 		server.poll_events();
@@ -37,7 +38,7 @@ int	main(int argc, char **argv)
 				}
 				request = parse_request(buffer);
 				request.client = server.get_socket(connection);
-				response = virtual_host.process_request(request);
+				response = server.process_request(request, connection);
 				send_response(response);
 				buffer.clear();
 			}
