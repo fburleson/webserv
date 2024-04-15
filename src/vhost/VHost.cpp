@@ -10,6 +10,14 @@ VHost::VHost(void)
 VHost::~VHost(void)
 {}
 
+void	VHost::init(const t_conf &conf)
+{
+	this->_default_route = conf.default_route;
+	this->_routes = conf.routes;
+	this->_err_pages = conf.err_pages;
+	this->_max_body_size = conf.max_body_size;
+}
+
 void	VHost::set_root(const std::string &root)
 {
 	this->_default_route.root = root;

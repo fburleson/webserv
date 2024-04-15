@@ -4,20 +4,27 @@
 
 int	main(int argc, char **argv)
 {
-	Server		server;
-	std::string	buffer;
-	t_httprequest	request;
-	VHost		virtual_host;
-	t_httpresponse	response;
+	std::vector<t_conf>	configs;
+	t_conf			config;
+	Server			server;
+	std::string		buffer;
+	t_httprequest		request;
+	t_httpresponse		response;
 
 	argv = argv;
 	if (argc <= 1)
 		return (error("no configuration file provided", ERR_NO_CONFIG));
-	server.add_socket(0, 9999);
-	server.add_socket(0, 8888);
-	virtual_host.set_root("/home/jburleson/documents/codam/webserv_website/");
-	virtual_host.allow_method(HTTP_GET);
-	server.add_vhost(9999, virtual_host);
+	config.ip = 0;
+	config.port = 9999;
+	config.default_route.index = "/index.html";
+	config.default_route.autoindex = false;
+	config.default_route.root = "/home/jburleson/documents/codam/webserv_website/";
+	config.default_route.allowed_methods.insert(HTTP_GET);
+	config.max_body_size = 1024;
+	configs.push_back(config);
+	config.port = 8888;
+	configs.push_back(config);
+	server.init(configs);
 	while (true)
 	{
 		server.poll_events();

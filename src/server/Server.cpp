@@ -6,6 +6,19 @@ Server::Server(void)
 Server::~Server(void)
 {}
 
+void	Server::init(const std::vector<t_conf> &confs)
+{
+	VHost	vhost;
+
+	for (const t_conf &conf : confs)
+	{
+		if (this->_vhosts.find(conf.port) == this->_vhosts.end())
+			this->add_socket(conf.ip, conf.port);
+		vhost.init(conf);
+		this->add_vhost(conf.port, vhost);
+	}
+}
+
 void	Server::close_socket(const t_socketref &ref)
 {
 	pollfd	socket = this->get_socket(ref);

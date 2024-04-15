@@ -24,7 +24,8 @@ class	VHost
 	public:
 		VHost(void);
 		~VHost(void);
-
+		
+		void					init(const t_conf &conf);
 		void					set_root(const std::string &root);
 		void					set_index(const std::string &index);
 		void					set_autoindex(const bool &autoindex);

@@ -69,6 +69,16 @@ typedef struct	s_route
 	std::string				alias;
 }		t_route;
 
+typedef struct	s_conf 
+{
+	uint32_t				ip;
+	uint16_t				port;
+	t_route					default_route;
+	std::vector<t_route>			routes;
+	std::map<HTTPStatus, std::string>	err_pages;
+	size_t					max_body_size;
+}		t_conf;
+
 typedef struct	s_httprequest
 {
 	HTTPMethod				method;
