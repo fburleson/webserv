@@ -34,7 +34,7 @@ int	main(int argc, char **argv)
 				{
 					server.close_socket(connection);
 					continue ;
-				{
+				}
 				request = parse_request(buffer);
 				request.client = server.get_socket(connection);
 				response = virtual_host.process_request(request);
