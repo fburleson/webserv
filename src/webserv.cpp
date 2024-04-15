@@ -1,55 +1,47 @@
 #include "webserv.hpp"
 #include "VHost.hpp"
+#include "Server.hpp"
 
 int	main(int argc, char **argv)
 {
-	bool			running = true;
-	t_server		server;
-	std::vector<size_t>	connections;
-	int			status;
-	char			buffer[BUFF_READ_SIZE];
-	t_httprequest		request;
-	VHost			virtual_host;
-	t_httpresponse		response;
+	Server		server;
+	std::string	buffer;
+	t_httprequest	request;
+	VHost		virtual_host;
+	t_httpresponse	response;
 
 	argv = argv;
 	if (argc <= 1)
 		return (error("no configuration file provided", ERR_NO_CONFIG));
-	add_socket(server, 0, 9999);
-	add_socket(server, 0, 8888);
+	server.add_socket(0, 9999);
+	server.add_socket(0, 8888);
 	virtual_host.set_root("/home/jburleson/documents/codam/webserv_website/");
 	virtual_host.allow_method(HTTP_GET);
-	while (running)
+	while (true)
 	{
-		poll_server(server);
-		for (size_t &idx: server.listens)
+		server.poll_events();
+		for (const t_socketref &socket : server.get_listen_sockets())
 		{
-			if (server.sockets[idx].revents & POLLIN)
-				add_connection(server, server.sockets[idx], connections);
+			if (server.has_socket_recv(socket))
+				server.add_connection(socket);
 		}
-		for (size_t &idx : connections)
+		for (const t_socketref &connection : server.get_connection_sockets())
 		{
-			if (server.sockets[idx].revents & POLLIN)
+			if (server.has_socket_recv(connection))
 			{
-				memset(buffer, 0, BUFF_READ_SIZE);
-				status = read(server.sockets[idx].fd, buffer, BUFF_READ_SIZE);
-				if (status == -1)
-					std::cerr << " read(): " << strerror(errno) << std::endl;
-				if (status == 0)
+				buffer = read_file(server.get_socket(connection).fd);
+				if (buffer.empty())
 				{
-					close(server.sockets[idx].fd);
-					server.sockets[idx].fd = -1;
-					std::cout << "a client has diconnected." << std::endl;
-				}
-				if (status == -1 || status == 0)
+					server.close_socket(connection);
 					continue ;
+				{
 				request = parse_request(buffer);
-				request.client = server.sockets[idx];
+				request.client = server.get_socket(connection);
 				response = virtual_host.process_request(request);
 				send_response(response);
+				buffer.clear();
 			}
 		}
 	}
-	return (OK);
 }
 

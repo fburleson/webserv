@@ -130,4 +130,5 @@ bool					is_method_allowed(const HTTPMethod &method, const t_route &route);
 
 int					error(const std::string &msg, const int &err_code);
 uint32_t				ip(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
+std::string				read_file(const int &fd);
 
