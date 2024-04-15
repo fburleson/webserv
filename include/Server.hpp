@@ -17,6 +17,8 @@ class	Server
 		VHost					_fallback_vhost;
 		std::map<uint16_t, std::vector<VHost>>	_vhosts;
 
+		VHost					_pick_vhost(const t_httprequest &request, const std::vector<VHost> &vhosts) const;
+
 	public:
 		Server(void);
 		~Server(void);

@@ -10,12 +10,23 @@ VHost::VHost(void)
 VHost::~VHost(void)
 {}
 
+std::vector<std::string>	VHost::get_server_names(void) const
+{
+	return (this->_server_names);
+}
+
 void	VHost::init(const t_conf &conf)
 {
+	this->_server_names = conf.server_names;
 	this->_default_route = conf.default_route;
 	this->_routes = conf.routes;
 	this->_err_pages = conf.err_pages;
 	this->_max_body_size = conf.max_body_size;
+}
+
+void	VHost::add_server_name(const std::string &name)
+{
+	this->_server_names.push_back(name);
 }
 
 void	VHost::set_root(const std::string &root)

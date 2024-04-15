@@ -95,13 +95,31 @@ pollfd				Server::get_socket(const t_socketref &ref) const
 	return (this->_sockets[ref.idx]);
 }
 
+VHost	Server::_pick_vhost(const t_httprequest &request, const std::vector<VHost> &vhosts) const
+{
+	VHost		vhost = vhosts[0];
+	std::string	host;
+
+	host = request.head.at("Host");
+	host = host.substr(0, host.find(':'));
+	for (const VHost &vhost : vhosts)
+	{
+		for (const std::string &name : vhost.get_server_names())
+		{
+			if (name == host)
+				return (vhost);
+		}
+	}
+	return (vhost);
+}
+
 t_httpresponse	Server::process_request(const t_httprequest &request, const t_socketref &connection) const
 {
 	t_httpresponse	response;
 	VHost		vhost = this->_fallback_vhost;
 
 	if (this->_vhosts.find(connection.port) != this->_vhosts.end())
-		vhost = this->_vhosts.at(connection.port)[0];
+		vhost = this->_pick_vhost(request, this->_vhosts.at(connection.port));
 	response = vhost.process_request(request);
 	return (response);
 }

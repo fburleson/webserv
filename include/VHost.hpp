@@ -4,6 +4,7 @@
 class	VHost
 {
 	private:
+		std::vector<std::string>		_server_names;
 		t_route					_default_route;
 		std::vector<t_route>			_routes;
 		std::map<HTTPStatus, std::string>	_err_pages;
@@ -25,7 +26,9 @@ class	VHost
 		VHost(void);
 		~VHost(void);
 		
+		std::vector<std::string>		get_server_names(void) const;
 		void					init(const t_conf &conf);
+		void					add_server_name(const std::string &name);
 		void					set_root(const std::string &root);
 		void					set_index(const std::string &index);
 		void					set_autoindex(const bool &autoindex);

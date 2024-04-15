@@ -73,6 +73,7 @@ typedef struct	s_conf
 {
 	uint32_t				ip;
 	uint16_t				port;
+	std::vector<std::string>		server_names;
 	t_route					default_route;
 	std::vector<t_route>			routes;
 	std::map<HTTPStatus, std::string>	err_pages;

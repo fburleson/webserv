@@ -22,7 +22,10 @@ int	main(int argc, char **argv)
 	config.default_route.allowed_methods.insert(HTTP_GET);
 	config.max_body_size = 1024;
 	configs.push_back(config);
-	config.port = 8888;
+	config.server_names.push_back("localhost");
+	config.default_route.autoindex = true;
+	config.default_route.index = "";
+	config.port = 9999;
 	configs.push_back(config);
 	server.init(configs);
 	while (true)
@@ -51,5 +54,6 @@ int	main(int argc, char **argv)
 			}
 		}
 	}
+	return (OK);
 }
 
