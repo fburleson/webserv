@@ -19,47 +19,49 @@ void	Server::init(const std::vector<t_conf> &confs)
 	}
 }
 
-void	Server::close_socket(const t_socketref &ref)
+void	Server::close_socket(const t_socket &socket)
 {
-	pollfd	socket = this->get_socket(ref);
-
-	close(socket.fd);
-	this->_sockets[ref.idx].fd = -1;
+	close(socket.poll_fd.fd);
+	for (t_socket &eq_socket : this->_sockets)
+	{
+		if (eq_socket.poll_fd.fd == socket.poll_fd.fd)
+			eq_socket.poll_fd.fd = -1;
+	}
 	std::cout << "a client has diconnected." << std::endl;
 }
 
 void	Server::add_socket(const uint32_t &ip, const uint16_t &port)
 {
-	pollfd		socket;
-	t_socketref	reference;
+	t_socket	socket;
+	pollfd		poll_fd;
 
-	socket = open_listen_socket(ip, port);
-	if (socket.fd == -1)
+	poll_fd = open_listen_socket(ip, port);
+	if (poll_fd.fd == -1)
 	{
 		error("failed to open server socket", ERR_NOP_SOCK);
 		return ;
 	}
+	socket.poll_fd = poll_fd;
+	socket.type = LISTEN;
+	socket.port = port;
 	this->_sockets.push_back(socket);
-	reference.port = port;
-	reference.idx = this->_sockets.size() - 1;
-	this->_listening.push_back(reference);
 }
 
-void	Server::add_connection(const t_socketref &socket)
+void	Server::add_connection(const t_socket &socket)
 {
-	pollfd		connection_socket;
-	t_socketref	reference;
+	t_socket	connection_socket;
+	pollfd		poll_fd;
 
-	connection_socket = open_connection_socket(this->get_socket(socket).fd);
-	if (connection_socket.fd == -1)
+	poll_fd = open_connection_socket(socket.poll_fd.fd);
+	if (poll_fd.fd == -1)
 	{
 		error("failed to open connection socket", ERR_NO_CONN);
 		return ;
 	}
+	connection_socket.poll_fd = poll_fd;
+	connection_socket.type = CONNECTION;
+	connection_socket.port = socket.port;
 	this->_sockets.push_back(connection_socket);
-	reference.port = socket.port;
-	reference.idx = this->_sockets.size() - 1;
-	this->_connections.push_back(reference);
 }
 
 void	Server::add_vhost(const uint16_t &port, const VHost &vhost)
@@ -67,32 +69,26 @@ void	Server::add_vhost(const uint16_t &port, const VHost &vhost)
 	this->_vhosts[port].push_back(vhost);
 }
 
-void	Server::poll_events(void) const
+std::vector<t_socket>	Server::get_sockets(void) const
 {
-	if (poll((pollfd *)&this->_sockets[0], this->_sockets.size(), POLL_TIMEOUT) == -1)
+	return (this->_sockets);
+}
+
+void	Server::poll_events(void)
+{
+	std::vector<pollfd>	poll_fds;
+
+	for (const t_socket &socket : this->_sockets)
+		poll_fds.push_back(socket.poll_fd);
+	if (poll((pollfd *)&poll_fds[0], this->_sockets.size(), POLL_TIMEOUT) == -1)
 		std::cerr << " poll(): " << strerror(errno) << std::endl;
+	for (size_t i = 0; i < poll_fds.size(); i++)
+		this->_sockets.at(i).poll_fd = poll_fds.at(i);
 }
 
-bool	Server::has_socket_recv(const t_socketref &ref) const
+bool	Server::has_socket_recv(const t_socket &socket) const
 {
-	const pollfd &socket = this->get_socket(ref);
-
-	return (socket.revents & POLLIN);
-}
-
-std::vector<t_socketref>	Server::get_listen_sockets(void) const
-{
-	return (this->_listening);
-}
-
-std::vector<t_socketref>	Server::get_connection_sockets(void) const
-{
-	return (this->_connections);
-}
-
-pollfd				Server::get_socket(const t_socketref &ref) const
-{
-	return (this->_sockets[ref.idx]);
+	return (socket.poll_fd.revents & POLLIN);
 }
 
 VHost	Server::_pick_vhost(const t_httprequest &request, const std::vector<VHost> &vhosts) const
@@ -113,7 +109,7 @@ VHost	Server::_pick_vhost(const t_httprequest &request, const std::vector<VHost>
 	return (vhost);
 }
 
-t_httpresponse	Server::process_request(const t_httprequest &request, const t_socketref &connection) const
+t_httpresponse	Server::process_request(const t_httprequest &request, const t_socket &connection) const
 {
 	t_httpresponse	response;
 	VHost		vhost = this->_fallback_vhost;

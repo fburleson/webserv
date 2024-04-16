@@ -31,26 +31,23 @@ int	main(int argc, char **argv)
 	while (true)
 	{
 		server.poll_events();
-		for (const t_socketref &socket : server.get_listen_sockets())
+		for (const t_socket &socket : server.get_sockets())
 		{
-			if (server.has_socket_recv(socket))
+			if (socket.type == LISTEN && server.has_socket_recv(socket))
 				server.add_connection(socket);
-		}
-		for (const t_socketref &connection : server.get_connection_sockets())
-		{
-			if (server.has_socket_recv(connection))
+			else if (socket.type == CONNECTION && server.has_socket_recv(socket))
 			{
-				buffer = read_file(server.get_socket(connection).fd);
+				buffer = read_file(socket.poll_fd.fd);
 				if (buffer.empty())
 				{
-					server.close_socket(connection);
+					server.close_socket(socket);
 					continue ;
 				}
 				request = parse_request(buffer);
-				request.client = server.get_socket(connection);
-				response = server.process_request(request, connection);
+				request.client = socket.poll_fd;
+				response = server.process_request(request, socket);
 				send_response(response);
-				buffer.clear();
+
 			}
 		}
 	}
