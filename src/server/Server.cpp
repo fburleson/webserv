@@ -22,12 +22,13 @@ void	Server::init(const std::vector<t_conf> &confs)
 void	Server::close_socket(const t_socket &socket)
 {
 	close(socket.poll_fd.fd);
+	this->_responses.erase(socket.poll_fd.fd);
 	for (t_socket &eq_socket : this->_sockets)
 	{
 		if (eq_socket.poll_fd.fd == socket.poll_fd.fd)
 			eq_socket.poll_fd.fd = -1;
 	}
-	std::cout << "a client has diconnected." << std::endl;
+	std::cout << "a client has diconnected on port " << socket.port << std::endl;
 }
 
 void	Server::add_socket(const uint32_t &ip, const uint16_t &port)
@@ -69,9 +70,23 @@ void	Server::add_vhost(const uint16_t &port, const VHost &vhost)
 	this->_vhosts[port].push_back(vhost);
 }
 
+void	Server::add_response(const t_socket &socket, const t_httpresponse &response)
+{
+	this->_responses[socket.poll_fd.fd].push(response);
+}
+
 std::vector<t_socket>	Server::get_sockets(void) const
 {
 	return (this->_sockets);
+}
+
+bool	Server::has_response(const t_socket &socket) const
+{
+	if (this->_responses.find(socket.poll_fd.fd) == this->_responses.end())
+		return (false);
+	if (this->_responses.at(socket.poll_fd.fd).empty())
+		return (false);
+	return (true);
 }
 
 void	Server::poll_events(void)
@@ -84,11 +99,6 @@ void	Server::poll_events(void)
 		std::cerr << " poll(): " << strerror(errno) << std::endl;
 	for (size_t i = 0; i < poll_fds.size(); i++)
 		this->_sockets.at(i).poll_fd = poll_fds.at(i);
-}
-
-bool	Server::has_socket_recv(const t_socket &socket) const
-{
-	return (socket.poll_fd.revents & POLLIN);
 }
 
 VHost	Server::_pick_vhost(const t_httprequest &request, const std::vector<VHost> &vhosts) const
@@ -118,5 +128,11 @@ t_httpresponse	Server::process_request(const t_httprequest &request, const t_soc
 		vhost = this->_pick_vhost(request, this->_vhosts.at(connection.port));
 	response = vhost.process_request(request);
 	return (response);
+}
+
+void	Server::send_queued_response(const t_socket &socket)
+{
+	send_response(this->_responses.at(socket.poll_fd.fd).front());
+	this->_responses.at(socket.poll_fd.fd).pop();
 }
 

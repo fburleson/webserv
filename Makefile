@@ -16,6 +16,7 @@ SRCFILES	=	webserv.cpp		\
 			read_file.cpp		\
 			socket.cpp		\
 			Server.cpp		\
+			server_util.cpp		\
 			parse_head.cpp		\
 			parse_request.cpp	\
 			response_util.cpp	\

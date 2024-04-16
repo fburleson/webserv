@@ -6,6 +6,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <queue>
 #include <unistd.h>
 #include <fcntl.h>
 #include <poll.h>

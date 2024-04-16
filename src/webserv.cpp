@@ -33,9 +33,11 @@ int	main(int argc, char **argv)
 		server.poll_events();
 		for (const t_socket &socket : server.get_sockets())
 		{
-			if (socket.type == LISTEN && server.has_socket_recv(socket))
+			if (socket.type == LISTEN && has_socket_recv(socket))
 				server.add_connection(socket);
-			else if (socket.type == CONNECTION && server.has_socket_recv(socket))
+			else if (socket.type == CONNECTION && server.has_response(socket) && can_socket_send(socket))
+				server.send_queued_response(socket);
+			else if (socket.type == CONNECTION && has_socket_recv(socket))
 			{
 				buffer = read_file(socket.poll_fd.fd);
 				if (buffer.empty())
@@ -46,8 +48,7 @@ int	main(int argc, char **argv)
 				request = parse_request(buffer);
 				request.client = socket.poll_fd;
 				response = server.process_request(request, socket);
-				send_response(response);
-
+				server.add_response(socket, response);
 			}
 		}
 	}
