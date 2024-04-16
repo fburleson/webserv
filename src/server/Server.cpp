@@ -21,13 +21,18 @@ void	Server::init(const std::vector<t_conf> &confs)
 
 void	Server::close_socket(const t_socket &socket)
 {
-	close(socket.poll_fd.fd);
-	this->_responses.erase(socket.poll_fd.fd);
-	for (t_socket &eq_socket : this->_sockets)
+	std::queue<t_httpresponse>	empty_queue;
+
+	this->_responses.at(socket.poll_fd.fd).swap(empty_queue);
+	for (size_t i = 0; i < this->_sockets.size(); i++)
 	{
-		if (eq_socket.poll_fd.fd == socket.poll_fd.fd)
-			eq_socket.poll_fd.fd = -1;
+		if (this->_sockets[i].poll_fd.fd == socket.poll_fd.fd)
+		{
+			this->_sockets.erase(this->_sockets.begin() + i);
+			break ;
+		}
 	}
+	close(socket.poll_fd.fd);
 	std::cout << "a client has diconnected on port " << socket.port << std::endl;
 }
 
@@ -106,8 +111,11 @@ VHost	Server::_pick_vhost(const t_httprequest &request, const std::vector<VHost>
 	VHost		vhost = vhosts[0];
 	std::string	host;
 
-	host = request.head.at("Host");
-	host = host.substr(0, host.find(':'));
+	if (request.head.find("Host") != request.head.end())
+	{
+		host = request.head.at("Host");
+		host = host.substr(0, host.find(':'));
+	}
 	for (const VHost &vhost : vhosts)
 	{
 		for (const std::string &name : vhost.get_server_names())
@@ -132,7 +140,10 @@ t_httpresponse	Server::process_request(const t_httprequest &request, const t_soc
 
 void	Server::send_queued_response(const t_socket &socket)
 {
-	send_response(this->_responses.at(socket.poll_fd.fd).front());
-	this->_responses.at(socket.poll_fd.fd).pop();
+	if (this->_responses.find(socket.poll_fd.fd) != this->_responses.end())
+	{
+		send_response(this->_responses.at(socket.poll_fd.fd).front());
+		this->_responses.at(socket.poll_fd.fd).pop();
+	}
 }
 
