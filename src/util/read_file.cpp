@@ -13,11 +13,14 @@ std::string	read_file(const std::string &path)
 
 std::string	read_file(const int &fd)
 {
-	std::string	content;
 	char		buffer[BUFF_READ_SIZE];
+	int		status;
 
-	read(fd, buffer, BUFF_READ_SIZE);
-	content = buffer;
-	return (content);
+	buffer[0] = '\0';
+	status = read(fd, buffer, BUFF_READ_SIZE);
+	if (status <= 0)
+		buffer[0] = '\0';
+	buffer[status] = '\0';
+	return (buffer);
 }
 
