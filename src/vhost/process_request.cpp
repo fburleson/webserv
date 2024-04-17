@@ -58,7 +58,7 @@ t_httpresponse	VHost::_process_delete_method(const t_httprequest &request, const
 	t_httpresponse	response;
 	std::string	resource = parse_resource(request.url, route);
 	int		status = std::remove(resource.c_str());	
-	
+
 	if (status != 0)
 		response.status = HTTP_NOT_FOUND;
 	if (status == 0)

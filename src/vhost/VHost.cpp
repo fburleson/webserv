@@ -106,7 +106,8 @@ t_route	VHost::_get_route(const t_httprequest &request) const
 
 	for (const t_route &route : this->_routes)
 	{
-		if (request.url.starts_with(route.alias))
+		if (request.url.starts_with(route.alias + "/") || \
+			request.url.substr(0, request.url.find('?')).ends_with(route.alias))
 			selected_route = route;
 	}
 	return (selected_route);
@@ -161,6 +162,7 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 	t_httpresponse	response;
 	t_route		route = this->_get_route(request);
 
+	std::cout << "method: " << request.method << std::endl;
 	if (request.version != HTTP_VERSION)
 		response = this->_process_error(HTTP_BAD_VERSION);
 	else if (!is_method_allowed(request.method, route))
