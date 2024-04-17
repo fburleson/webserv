@@ -29,7 +29,7 @@ class	Server
 		Server(void);
 		~Server(void);
 
-		void						init(const std::vector<t_conf> &confs);
+		int						init(const std::vector<t_conf> &confs);
 		void						close_socket(const t_socket &socket);
 		void						add_socket(const uint32_t &ip, const uint16_t &port);
 		void						add_connection(const t_socket &socket);

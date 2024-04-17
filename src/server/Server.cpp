@@ -6,17 +6,40 @@ Server::Server(void)
 Server::~Server(void)
 {}
 
-void	Server::init(const std::vector<t_conf> &confs)
+static bool	has_port_conflict(const VHost &vhost, const std::vector<VHost> &vhosts)
+{
+	for (const VHost &cmp_vhost : vhosts)
+	{
+		if (cmp_vhost.get_server_names().size() == 0 && vhost.get_server_names().size() == 0)
+			return (true);
+		if (cmp_vhost.get_server_names().size() == 0 || vhost.get_server_names().size() == 0)
+			return (false);
+		for (const std::string &vhost_name : vhost.get_server_names())
+		{
+			for (const std::string &cmp_name : cmp_vhost.get_server_names())
+			{
+				if (cmp_name == vhost_name)
+					return (true);
+			}
+		}
+	}
+	return (false);
+}
+
+int	Server::init(const std::vector<t_conf> &confs)
 {
 	VHost	vhost;
 
 	for (const t_conf &conf : confs)
 	{
+		vhost.init(conf);
 		if (this->_vhosts.find(conf.port) == this->_vhosts.end())
 			this->add_socket(conf.ip, conf.port);
-		vhost.init(conf);
+		else if (has_port_conflict(vhost, this->_vhosts[conf.port]))
+			return (ERR_PORT_CONF);
 		this->add_vhost(conf.port, vhost);
 	}
+	return (OK);
 }
 
 void	Server::close_socket(const t_socket &socket)

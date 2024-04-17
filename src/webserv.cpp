@@ -7,6 +7,7 @@ int	main(int argc, char **argv)
 	std::vector<t_conf>	configs;
 	t_conf			config;
 	Server			server;
+	int			init_status;
 	std::string		buffer;
 	t_httprequest		request;
 	t_httpresponse		response;
@@ -27,7 +28,9 @@ int	main(int argc, char **argv)
 	config.default_route.index = "";
 	config.port = 9999;
 	configs.push_back(config);
-	server.init(configs);
+	init_status = server.init(configs);
+	if (init_status != OK)
+		return (error("port conflict in configuration", init_status));
 	while (true)
 	{
 		server.poll_events();

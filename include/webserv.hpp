@@ -25,6 +25,7 @@ namespace fs = std::filesystem;
 #define	ERR_NOP_SOCK	3
 #define	ERR_NO_CONN	4
 #define	ERR_NO_POLL	5
+#define	ERR_PORT_CONF	6
 
 #define	SOCK_READ_SIZE	1024
 #define	SOCK_QUEUE_SIZE	100
