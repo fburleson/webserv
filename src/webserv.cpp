@@ -11,6 +11,7 @@ int	main(int argc, char **argv)
 	std::string		buffer;
 	t_httprequest		request;
 	t_httpresponse		response;
+	t_route			post_route;
 
 	argv = argv;
 	if (argc <= 1)
@@ -19,9 +20,16 @@ int	main(int argc, char **argv)
 	config.port = 9999;
 	config.default_route.index = "/index.html";
 	config.default_route.autoindex = false;
-	config.default_route.root = "/home/jburleson/documents/codam/webserv_website/";
+	config.default_route.root = "/home/jburleson/documents/codam/webserv_website";
 	config.default_route.allowed_methods.insert(HTTP_GET);
 	config.max_body_size = 1024;
+	post_route.alias = "/post";
+	post_route.root = "/home/jburleson/documents/codam/webserv_post";
+	post_route.allowed_methods.insert(HTTP_POST);
+	config.routes.push_back(post_route);
+	post_route.alias = "/del";
+	post_route.allowed_methods.insert(HTTP_DELETE);
+	config.routes.push_back(post_route);
 	configs.push_back(config);
 	config.server_names.push_back("localhost");
 	config.default_route.autoindex = true;

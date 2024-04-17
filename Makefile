@@ -30,7 +30,7 @@ SRCS		=	$(addprefix $(SRCDIR), $(SRCFILES))
 BINS		=	$(addprefix $(BINDIR), $(BINFILES))
 
 CC		=	c++
-CFLAGS		=	-Wall -Wextra -Werror -std=c++20
+CFLAGS		=	-Wall -Wextra -Werror -std=c++23
 RM		=	rm -rf
 
 all:		$(NAME)

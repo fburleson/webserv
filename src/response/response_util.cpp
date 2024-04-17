@@ -3,9 +3,13 @@
 std::string	parse_resource(const std::string &url, const t_route &route)
 {
 	std::string	parsed;
-
-	if (url.length() > route.alias.length())
-		parsed = route.root + url.substr(route.alias.length());
+	std::string	url_no_query;
+	
+	url_no_query = url;
+	if (url.contains('?'))
+		url_no_query = url.substr(0, url.find('?'));
+	if (url_no_query.length() > route.alias.length())
+		parsed = route.root + url_no_query.substr(route.alias.length());
 	else
 		parsed = route.root;
 	return (parsed);
