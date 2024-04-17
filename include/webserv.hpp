@@ -30,7 +30,7 @@ namespace fs = std::filesystem;
 #define	SOCK_QUEUE_SIZE	100
 #define	POLL_TIMEOUT	100
 
-#define	BUFF_READ_SIZE	1024
+#define	BUFF_READ_SIZE	100
 
 #define	HTTP_VERSION	"HTTP/1.1"
 

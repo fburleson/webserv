@@ -13,14 +13,22 @@ std::string	read_file(const std::string &path)
 
 std::string	read_file(const int &fd)
 {
-	char		buffer[BUFF_READ_SIZE];
-	int		status;
+	std::stringstream	content;
+	char			buffer[BUFF_READ_SIZE];
+	int			status;
 
 	buffer[0] = '\0';
-	status = read(fd, buffer, BUFF_READ_SIZE);
-	if (status <= 0)
-		buffer[0] = '\0';
-	buffer[status] = '\0';
-	return (buffer);
+	while (status > 0)
+	{
+		status = read(fd, buffer, BUFF_READ_SIZE - 1);
+		if (status == -1)
+		{
+			content.clear();
+			return (content.str());
+		}
+		buffer[status] = '\0';
+		content << buffer;
+	}
+	return (content.str());
 }
 
