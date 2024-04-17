@@ -19,7 +19,6 @@ class	Server
 {
 	private:
 		std::vector<t_socket>				_sockets;
-		VHost						_fallback_vhost;
 		std::map<uint16_t, std::vector<VHost>>		_vhosts;
 		std::map<int, std::queue<t_httpresponse>>	_responses;
 

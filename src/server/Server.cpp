@@ -153,7 +153,7 @@ VHost	Server::_pick_vhost(const t_httprequest &request, const std::vector<VHost>
 t_httpresponse	Server::process_request(const t_httprequest &request, const t_socket &connection) const
 {
 	t_httpresponse	response;
-	VHost		vhost = this->_fallback_vhost;
+	VHost		vhost;
 
 	if (this->_vhosts.find(connection.port) != this->_vhosts.end())
 		vhost = this->_pick_vhost(request, this->_vhosts.at(connection.port));
