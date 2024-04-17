@@ -64,7 +64,8 @@ std::vector<std::byte>	generate_dir_list(const t_httprequest &request, const t_r
 	std::stringstream	buffer;
 	std::string		dir = parse_resource(request.url, route);
 	std::string		current_path;
-	
+	struct stat		file_stat;
+
 	buffer << "<!DOCTYPE html>";
 	buffer << "<html>";
 	buffer << "<head><title>Index of " << request.url << "</title></head>";
@@ -82,7 +83,11 @@ std::vector<std::byte>	generate_dir_list(const t_httprequest &request, const t_r
 		buffer << "<tr>";
 		buffer << "<td><a href=" << fs::path(request.url).parent_path().parent_path() << ">../" << "</a></td>";
 		buffer << "<td></td>";
-		buffer << "<td>01-01-1990 00:00</td>";
+		buffer << "<td>";
+		if (stat(fs::path(request.url).parent_path().parent_path().c_str(), &file_stat) == 0)
+			buffer << std::ctime(&file_stat.st_mtime) << "</td>";
+		else
+			buffer << "unknown</td>";
 		buffer << "</tr>";
 	}
 	for (const auto &entry : fs::directory_iterator(dir))
@@ -100,7 +105,11 @@ std::vector<std::byte>	generate_dir_list(const t_httprequest &request, const t_r
 			buffer << "<td><a href=" << current_path << ">" << current_path << "</a></td>";
 			buffer << "<td></td>";
 		}
-		buffer << "<td>01-01-1990 00:00</td>";
+		buffer << "<td>";
+		if (stat(entry.path().c_str(), &file_stat) == 0)
+			buffer << std::ctime(&file_stat.st_mtime) << "</td>";
+		else
+			buffer << "unknown</td>";
 		buffer << "</tr>";
 	}
 	buffer << "</table>";
