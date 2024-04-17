@@ -74,7 +74,6 @@ t_httpresponse	VHost::_process_delete_method(const t_httprequest &request, const
 		response = this->_process_error(HTTP_INTERNAL_ERROR);
 	if (status == 0)
 		response.status = HTTP_NO_CONTENT;
-	std::perror("Failed to delete");
 	return (response);
 }
 

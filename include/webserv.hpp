@@ -104,14 +104,6 @@ typedef struct	s_httpresponse
 	pollfd					client;
 }		t_httpresponse;
 
-typedef struct	s_ip
-{
-	uint8_t					byte0;
-	uint8_t					byte1;
-	uint8_t					byte2;
-	uint8_t					byte3;
-}		t_ip;
-
 //	SOCKET
 
 pollfd					open_listen_socket(const uint32_t &ip, const uint16_t &port);
