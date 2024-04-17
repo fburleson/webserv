@@ -35,6 +35,10 @@ std::string	process_message(const HTTPStatus &code)
 		return ("Payload Too Large");
 	if (code == HTTP_PERM_MOVE)
 		return ("Moved Permanently");
+	if (code == HTTP_BAD_REQUEST)
+		return ("Bad Request");
+	if (code == HTTP_FORBIDDEN)
+		return ("Forbidden");
 	return ("Internal Server Error");
 }
 

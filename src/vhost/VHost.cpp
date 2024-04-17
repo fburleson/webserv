@@ -162,7 +162,6 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 	t_httpresponse	response;
 	t_route		route = this->_get_route(request);
 
-	std::cout << "method: " << request.method << std::endl;
 	if (request.version != HTTP_VERSION)
 		response = this->_process_error(HTTP_BAD_VERSION);
 	else if (!is_method_allowed(request.method, route))
@@ -171,7 +170,7 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		response = this->_process_error(HTTP_TOO_LARGE);
 	else if (!route.redirect.empty())
 		response = process_redirect(route.redirect);
-	else if (this->_is_incomplete_dir(request, route))
+	else if (request.method == HTTP_GET && this->_is_incomplete_dir(request, route))
 		response = process_redirect(request.url + '/');
 	else if (request.method == HTTP_GET)
 		response = this->_process_get_method(request, route);

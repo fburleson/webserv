@@ -5,7 +5,7 @@ t_httpresponse	VHost::_process_get_method(const t_httprequest &request, const t_
 	t_httpresponse	response;
 	std::string	resource = parse_resource(request.url, route);
 	fs::path	path = fs::path(resource);
-	
+
 	if (resource.back() == '/')
 	{
 		if (route.autoindex && fs::is_directory(path))
@@ -45,6 +45,11 @@ t_httpresponse	VHost::_process_post_method(const t_httprequest &request, const t
 		}
 	}
 	resource = parse_resource(request.url, route);
+	if (resource == route.root || resource == (route.root + '/'))
+	{
+		response = this->_process_error(HTTP_BAD_REQUEST);
+		return (response);
+	}
 	std::ofstream	new_file(resource);
 
 	for (const std::byte &byte : request.body)
@@ -57,12 +62,19 @@ t_httpresponse	VHost::_process_delete_method(const t_httprequest &request, const
 {
 	t_httpresponse	response;
 	std::string	resource = parse_resource(request.url, route);
-	int		status = std::remove(resource.c_str());	
+	int		status;	
 
+	if (resource == route.root || resource == (route.root + '/'))
+	{
+		response = this->_process_error(HTTP_FORBIDDEN);
+		return (response);
+	}
+	status = std::remove(resource.c_str());
 	if (status != 0)
-		response.status = HTTP_NOT_FOUND;
+		response = this->_process_error(HTTP_INTERNAL_ERROR);
 	if (status == 0)
 		response.status = HTTP_NO_CONTENT;
+	std::perror("Failed to delete");
 	return (response);
 }
 
