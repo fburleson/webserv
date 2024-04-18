@@ -12,6 +12,7 @@
 #include <poll.h>
 #include <dirent.h>
 #include <ctime>
+#include <cstring>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>

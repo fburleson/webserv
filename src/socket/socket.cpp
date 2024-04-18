@@ -26,23 +26,23 @@ pollfd	open_listen_socket(const uint32_t &ip, const uint16_t &port)
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd == -1)
 	{
-		std::cerr << " socket(): " << strerror(errno) << std::endl;
+		std::cerr << " socket(): " << std::strerror(errno) << std::endl;
 		return (poll_fd);
 	}
 	fcntl(fd, F_SETFL, O_NONBLOCK);	
 	if (setsockopts(fd) == -1)
 	{
-		std::cerr << " setsockopts(): " << strerror(errno) << std::endl;
+		std::cerr << " setsockopts(): " << std::strerror(errno) << std::endl;
 		return (poll_fd);
 	}
 	if (bind_sock(fd, ip, port) == -1)
 	{
-		std::cerr << " bind(): " << strerror(errno) << std::endl;
+		std::cerr << " bind(): " << std::strerror(errno) << std::endl;
 		return (poll_fd);
 	}
 	if (listen(fd, SOCK_QUEUE_SIZE) == -1)
 	{
-		std::cerr << " listen(): " << strerror(errno) << std::endl;
+		std::cerr << " listen(): " << std::strerror(errno) << std::endl;
 		return (poll_fd);
 	}
 	std::cout << "opened socket on port " << port << std::endl;
@@ -65,7 +65,7 @@ pollfd	open_connection_socket(int socket_fd)
 	fd = accept(socket_fd, (sockaddr *)&connection_address, (socklen_t *)&connection_len);
 	if (fd == -1)
 	{
-		std::cerr << " accept(): " << strerror(errno) << std::endl;
+		std::cerr << " accept(): " << std::strerror(errno) << std::endl;
 		return (poll_fd);
 	}
 	fcntl(fd, F_SETFL, O_NONBLOCK);
