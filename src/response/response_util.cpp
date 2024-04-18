@@ -1,5 +1,10 @@
 #include "webserv.hpp"
 
+std::string	remove_query_string(const std::string &url)
+{
+	return (url.substr(0, url.find('?')));
+}
+
 std::string	parse_resource(const std::string &url, const t_route &route)
 {
 	std::string	parsed;
@@ -7,7 +12,7 @@ std::string	parse_resource(const std::string &url, const t_route &route)
 	
 	url_no_query = url;
 	if (url.contains('?'))
-		url_no_query = url.substr(0, url.find('?'));
+		url_no_query = remove_query_string(url);
 	if (url_no_query.length() > route.alias.length())
 		parsed = route.root + url_no_query.substr(route.alias.length());
 	else
@@ -70,7 +75,12 @@ std::vector<std::byte>	generate_dir_list(const t_httprequest &request, const t_r
 	buffer << "<html>";
 	buffer << "<head><title>Index of " << request.url << "</title></head>";
 	buffer << "<body>";
-	buffer << "<h1>Index of " << request.url << "</h1>";
+	buffer << "<h1>Index of ";
+	if (request.url.contains('?'))
+		buffer << remove_query_string(request.url);
+	else
+		buffer << request.url;
+	buffer << "</h1>";
 	buffer << "<hr>";
 	buffer << "<table style=\"width:100%\">";
 	buffer << "<tr style=\"padding:0px\">";

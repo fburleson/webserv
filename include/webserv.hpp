@@ -137,6 +137,7 @@ std::vector<std::byte>			generate_dir_list(const t_httprequest &request, const t
 t_httpresponse				process_redirect(const std::string &url);
 std::string				get_content_type(const std::string &resource);
 bool					is_method_allowed(const HTTPMethod &method, const t_route &route);
+std::string				remove_query_string(const std::string &url);
 
 //	UTIL
 
