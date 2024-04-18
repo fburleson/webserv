@@ -15,7 +15,7 @@ std::string	read_file(const int &fd)
 {
 	std::stringstream	content;
 	char			buffer[BUFF_READ_SIZE];
-	int			status;
+	int			status = 1;
 
 	buffer[0] = '\0';
 	while (status > 0)

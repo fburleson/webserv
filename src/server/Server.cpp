@@ -78,8 +78,9 @@ void	Server::add_socket(const uint32_t &ip, const uint16_t &port)
 
 void	Server::add_connection(const t_socket &socket)
 {
-	t_socket	connection_socket;
-	pollfd		poll_fd;
+	t_socket			connection_socket;
+	pollfd				poll_fd;
+	std::queue<t_httpresponse>	empty;
 
 	poll_fd = open_connection_socket(socket.poll_fd.fd);
 	if (poll_fd.fd == -1)
@@ -91,6 +92,7 @@ void	Server::add_connection(const t_socket &socket)
 	connection_socket.type = CONNECTION;
 	connection_socket.port = socket.port;
 	this->_sockets.push_back(connection_socket);
+	this->_responses[poll_fd.fd] = empty;
 }
 
 void	Server::add_vhost(const uint16_t &port, const VHost &vhost)
@@ -100,7 +102,7 @@ void	Server::add_vhost(const uint16_t &port, const VHost &vhost)
 
 void	Server::add_response(const t_socket &socket, const t_httpresponse &response)
 {
-	this->_responses[socket.poll_fd.fd].push(response);
+	this->_responses.at(socket.poll_fd.fd).push(response);
 }
 
 std::vector<t_socket>	Server::get_sockets(void) const
