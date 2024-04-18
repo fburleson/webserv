@@ -165,10 +165,15 @@ t_httpresponse	Server::process_request(const t_httprequest &request, const t_soc
 
 void	Server::send_queued_response(const t_socket &socket)
 {
-	if (this->_responses.find(socket.poll_fd.fd) != this->_responses.end())
+	t_httpresponse	response;
+
+	if (this->_responses.contains(socket.poll_fd.fd))
 	{
-		send_response(this->_responses.at(socket.poll_fd.fd).front());
+		response = this->_responses.at(socket.poll_fd.fd).front();
+		send_response(response);
 		this->_responses.at(socket.poll_fd.fd).pop();
+		if (response.head.at("Connection") == "close")
+			this->close_socket(socket);
 	}
 }
 
