@@ -183,6 +183,9 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 	response.message = process_message(response.status);
 	response.head.insert({"Server", SERVER_NAME});
 	response.head.insert({"Content-Length", std::to_string(response.body.size())});
+	response.head.insert({"Connection", "keep-alive"});
+	response.head.insert({"Keep-Alive", "timeout=" + std::to_string(KALIVE_TIMEO)
+	+ ", max=" + std::to_string(KALIVE_MAX)});
 	return (response);
 }
 
