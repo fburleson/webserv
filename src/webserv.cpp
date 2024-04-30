@@ -5,41 +5,18 @@
 int	main(int argc, char **argv)
 {
 	std::vector<t_conf>	configs;
-	t_conf			config;
 	Server			server;
 	int			init_status;
 	std::string		buffer;
 	t_httprequest		request;
 	t_httpresponse		response;
-	t_route			post_route;
 
-	//argv = argv;
 	if (argc <= 1)
 		return (error("no configuration file provided", ERR_NO_CONFIG));
-	/*config.ip = 0;
-	config.port = 9999;
-	config.default_route.index = "/index.html";
-	config.default_route.autoindex = false;
-	config.default_route.root = "/home/jburleson/documents/codam/webserv_website";
-	config.default_route.allowed_methods.insert(HTTP_GET);
-	config.max_body_size = 1024;
-	post_route.alias = "/post";
-	post_route.root = "/home/jburleson/documents/codam/webserv_post";
-	post_route.allowed_methods.insert(HTTP_POST);
-	config.routes.push_back(post_route);
-	post_route.alias = "/del";
-	post_route.allowed_methods.insert(HTTP_DELETE);
-	config.routes.push_back(post_route);
-	configs.push_back(config);
-	config.server_names.push_back("localhost");
-	config.default_route.autoindex = true;
-	config.default_route.index = "";
-	config.port = 9999;
-	configs.push_back(config);*/
 	if (!initConfig(argv[1], configs))
 			return (EXIT_FAILURE);
 	init_status = server.init(configs);
-	if (init_status != OK)
+	if (server.init(configs) != OK)
 		return (error("port conflict in configuration", init_status));
 	while (true)
 	{

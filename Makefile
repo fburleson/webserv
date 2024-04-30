@@ -1,114 +1,86 @@
 NAME		=	webserv
 
-SRCDIR		=	src/
-UTILDIR		=	util/
-SOCKETDIR	=	socket/
-REQUESTDIR	=	request/
-SERVERDIR	=	server/
-RESPONSEDIR	=	response/
-VHOSTDIR	=	vhost/
-INITDIR		=	initialization/
+SRCDIR		=	./src/
+UTILDIR		=	$(SRCDIR)util/
+SOCKETDIR	=	$(SRCDIR)socket/
+REQUESTDIR	=	$(SRCDIR)request/
+SERVERDIR	=	$(SRCDIR)server/
+RESPONSEDIR	=	$(SRCDIR)response/
+VHOSTDIR	=	$(SRCDIR)vhost/
+INITDIR		=	$(SRCDIR)init/
 BINDIR		=	./bin/
 INCLUDEDIR	=	./include/
 
-## Reset
-NC		:= \033[0m# 	Text Reset
+SRCFILES	=	webserv.cpp		\
+			log.cpp			\
+			read_file.cpp		\
+			socket.cpp		\
+			Server.cpp		\
+			server_util.cpp		\
+			parse_head.cpp		\
+			parse_request.cpp	\
+			response_util.cpp	\
+			response.cpp		\
+			process_request.cpp	\
+			fill_functions.cpp	\
+			get_functions.cpp	\
+			init_config.cpp		\
+			init_utils.cpp		\
+			print_functions.cpp	\
+			parse.cpp		\
+			VHost.cpp		\
 
-# Regular Colors
-BLACK	:= \033[0;30m#	Black
-RED		:= \033[3;31m#	Red
-GREEN	:= \033[3;32m#	Green
-BLD_GRN	:= \033[1;32m#	Green but bold
-YELLOW	:= \033[3;33m#	Yellow
-BLUE	:= \033[1;34m#	Blue
-PURPLE	:= \033[3;35m#	Purple
-BLD_PUR	:= \033[1;35m#	Purple but bold
-CYAN	:= \033[3;36m#	Cyan
-WHITE	:= \033[1;37m#	White Reset
-NC		:= \033[0m# 	Text Reset
+BINFILES	=	$(notdir $(SRCFILES:.cpp=.o))
 
-# Regular Colors
-BLACK	:= \033[0;30m#	Black
-RED		:= \033[3;31m#	Red
-GREEN	:= \033[3;32m#	Green
-BLD_GRN	:= \033[1;32m#	Green but bold
-YELLOW	:= \033[3;33m#	Yellow
-BLUE	:= \033[1;34m#	Blue
-PURPLE	:= \033[3;35m#	Purple
-BLD_PUR	:= \033[1;35m#	Purple but bold
-CYAN	:= \033[3;36m#	Cyan
-WHITE	:= \033[1;37m#	White
-
-SRCFILES	=	webserv.cpp
-
-UTILFILES	=	log.cpp				\
-				read_file.cpp		\
-
-SOCKETFILES	=	socket.cpp
-
-REQFILES	=	parse_head.cpp		\
-				parse_request.cpp	\
-
-SERVERFILES	=	Server.cpp			\
-				server_util.cpp		\
-
-RESPONFILES	=	response.cpp		\
-				response_util.cpp	\
-
-VHOSTFILES	=	VHost.cpp			\
-				process_request.cpp	\
-
-INITFILES	=	initConfig.cpp		\
-				initUtils.cpp		\
-				getFunctions.cpp	\
-				fillFunctions.cpp	\
-				printFunctions.cpp	\
-				parsing/parsing.cpp	\
-
-SRCFILES	+=	$(addprefix $(UTILDIR), $(UTILFILES))
-SRCFILES	+=	$(addprefix $(SOCKETDIR), $(SOCKETFILES))
-SRCFILES	+=	$(addprefix $(REQUESTDIR), $(REQFILES))
-SRCFILES	+=	$(addprefix $(SERVERDIR), $(SERVERFILES))
-SRCFILES	+=	$(addprefix $(RESPONSEDIR), $(RESPONFILES))
-SRCFILES	+=	$(addprefix $(VHOSTDIR), $(VHOSTFILES))
-SRCFILES	+=	$(addprefix $(INITDIR), $(INITFILES))
-BINFILES	=	$(SRCFILES:.cpp=.o)
-
+SRCS		=	$(addprefix $(SRCDIR), $(SRCFILES))
 BINS		=	$(addprefix $(BINDIR), $(BINFILES))
 
-CC			=	c++
+CC		=	c++
 CFLAGS		=	-Wall -Wextra -Werror -std=c++23
-RM			=	rm -rf
+RM		=	rm -rf
 
-all:	$(NAME)
+all:		$(NAME)
 
 $(NAME):	$(BINS)
-	@echo "$(BLD_GRN)Building... 🏗$(NC)"
-	@$(CC) $(CFLAGS) $(BINS) -o $(NAME)
-	@echo "$(BLD_GRN)Done! 🏠$(NC)"
+			$(CC) $(CFLAGS) $(BINS) -o $(NAME)
 
-$(BINDIR)%.o:	$(SRCDIR)%.cpp | $(BINDIR)
-	@echo "$(PURPLE)Compiling... $(NC)🧱 $(PURPLE) $< $(NC)"
-	@$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+$(BINDIR)%.o:	$(SRCDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
-$(BINDIR):
-	@echo "$(YELLOW)Creating folders... $(NC)🗂"
-	@mkdir -p $@
-	@mkdir -p $@$(UTILDIR)
-	@mkdir -p $@$(SOCKETDIR)
-	@mkdir -p $@$(REQUESTDIR)
-	@mkdir -p $@$(SERVERDIR)
-	@mkdir -p $@$(RESPONSEDIR)
-	@mkdir -p $@$(VHOSTDIR)
-	@mkdir -p $@$(INITDIR)parsing/
+$(BINDIR)%.o:	$(UTILDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(SOCKETDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(REQUESTDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(SERVERDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(RESPONSEDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(VHOSTDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(INITDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
 clean:
-	@echo "$(CYAN)Cleaning...$(NC) 🧹"
-	@$(RM) $(NAME)
+			$(RM) $(NAME)
 
 fclean:		clean
-	@echo "$(RED)Destroying...$(NC) 💥"
-	@$(RM) $(BINDIR)
+			$(RM) $(BINDIR)
 
 re:		fclean all
 
