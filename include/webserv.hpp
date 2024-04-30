@@ -41,10 +41,10 @@ namespace fs = std::filesystem;
 #define	HTTP_VERSION	"HTTP/1.1"
 
 enum HTTPMethod {
-	HTTP_UNKNOWN,
 	HTTP_GET,
 	HTTP_POST,
-	HTTP_DELETE
+	HTTP_DELETE,
+	HTTP_UNKNOWN
 };
 
 enum HTTPStatus {
@@ -138,6 +138,10 @@ t_httpresponse				process_redirect(const std::string &url);
 std::string				get_content_type(const std::string &resource);
 bool					is_method_allowed(const HTTPMethod &method, const t_route &route);
 std::string				remove_query_string(const std::string &url);
+
+
+// INITIALIZATION
+bool	initConfig(const std::string &filePath, std::vector<t_conf> &serverConfigs);
 
 //	UTIL
 
