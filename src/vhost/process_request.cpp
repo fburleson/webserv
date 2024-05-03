@@ -1,4 +1,41 @@
 #include "VHost.hpp"
+#include "CgiHandler.hpp"
+
+t_httpresponse	VHost::_process_cgi(const t_httprequest &request, const t_route &route) const
+{
+	t_httpresponse	response;
+	std::string		output;
+	size_t			i;
+	std::string		resource = parse_resource(request.url, route);
+
+	if (access(resource.c_str(), F_OK))
+	{
+		response = this->_process_error(HTTP_NOT_FOUND);
+		return (response);
+	}
+	if (access(resource.c_str(), X_OK))
+	{
+		response = this->_process_error(HTTP_FORBIDDEN);
+		return (response);
+	}
+	CgiHandler	handler(request, route, request.body);
+	if (!handler.startExecution())
+	{
+		response = this->_process_error(HTTP_INTERNAL_ERROR);
+		return (response);
+	}
+	output = handler.getOutput();
+	response.status = HTTP_OK;
+	response.head = parse_head(output);
+	for (i = 0; output[i]; ++i) {
+		if (output[i] == '\n' && std::isspace(output[i + 1]))
+			break;
+	}
+	while (std::isspace(output[i]) && output[i])
+		++i;
+	response.body = parse_body(output.substr(i));
+	return (response);
+}
 
 t_httpresponse	VHost::_process_get_method(const t_httprequest &request, const t_route &route) const
 {

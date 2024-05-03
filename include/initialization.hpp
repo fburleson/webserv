@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:37:25 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/04/29 09:24:07 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/01 00:24:44 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,8 @@
 
 #define DEFAULT_IP			0x7F000001 //127.0.0.1
 #define DEFAULT_BODY		1024
-#define DEFAULT_AUTOINDEX	true
+#define DEFAULT_AUTOINDEX	false
 #define DEFAULT_PORT		80
-#define DEFAULT_ERR_PATH	"./error.log"
 
 enum keyWordIndices {
 	LISTEN,

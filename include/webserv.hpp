@@ -124,6 +124,7 @@ void					add_connection(t_server &server, const pollfd &socket, std::vector<size
 
 t_httprequest				parse_request(const std::string &request);
 std::map<std::string, std::string>	parse_head(const std::string &head);
+std::vector<std::byte>				parse_body(const std::string &body);
 
 //	RESPONSE
 
@@ -140,7 +141,7 @@ bool					is_method_allowed(const HTTPMethod &method, const t_route &route);
 std::string				remove_query_string(const std::string &url);
 
 
-// INITIALIZATION
+// INIT
 bool	initConfig(const std::string &filePath, std::vector<t_conf> &serverConfigs);
 
 //	UTIL

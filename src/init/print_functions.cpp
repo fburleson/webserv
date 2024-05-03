@@ -1,23 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   printFunctions.cpp                                 :+:      :+:    :+:   */
+/*   print_functions.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:17:46 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/04/29 08:36:11 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/03 17:18:54 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "initialization.hpp"
-#include <fstream>
 
 void	printError(const std::string &msg) {
-	std::ofstream	errPage(DEFAULT_ERR_PATH, std::ios_base::app);
-
 	std::cerr << msg << std::endl;
-	errPage << msg << std::endl;
 }
 
 void	printRoute(const t_route &route) {

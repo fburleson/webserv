@@ -47,7 +47,7 @@ static HTTPMethod	get_method(const std::string &request)
 		return (HTTP_UNKNOWN);
 }
 
-static std::vector<std::byte>	parse_body(const std::string &body)
+std::vector<std::byte>	parse_body(const std::string &body)
 {
 	std::vector<std::byte>	parsed;
 	

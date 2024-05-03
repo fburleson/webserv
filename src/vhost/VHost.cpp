@@ -93,6 +93,13 @@ bool	VHost::_is_incomplete_dir(const t_httprequest &request, const t_route &rout
 	return (false);
 }
 
+bool	VHost::_is_cgi(const t_httprequest &request) const
+{
+	if (request.url.find(".py") != std::string::npos)
+		return (true);
+	return (false);
+}
+
 std::vector<std::byte>	VHost::_get_err_page(const HTTPStatus &code) const
 {
 	if (this->_err_pages.find(code) != this->_err_pages.end())
@@ -172,6 +179,8 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		response = process_redirect(route.redirect);
 	else if (request.method == HTTP_GET && this->_is_incomplete_dir(request, route))
 		response = process_redirect(request.url + '/');
+	else if (request.method == HTTP_GET && this->_is_cgi(request))
+		response = this->_process_cgi(request, route);
 	else if (request.method == HTTP_GET)
 		response = this->_process_get_method(request, route);
 	else if (request.method == HTTP_POST)

@@ -8,14 +8,15 @@ SERVERDIR	=	$(SRCDIR)server/
 RESPONSEDIR	=	$(SRCDIR)response/
 VHOSTDIR	=	$(SRCDIR)vhost/
 INITDIR		=	$(SRCDIR)init/
+CGIDIR		=	$(SRCDIR)cgi/
 BINDIR		=	./bin/
 INCLUDEDIR	=	./include/
 
 SRCFILES	=	webserv.cpp		\
-			log.cpp			\
+			log.cpp				\
 			read_file.cpp		\
-			socket.cpp		\
-			Server.cpp		\
+			socket.cpp			\
+			Server.cpp			\
 			server_util.cpp		\
 			parse_head.cpp		\
 			parse_request.cpp	\
@@ -27,8 +28,9 @@ SRCFILES	=	webserv.cpp		\
 			init_config.cpp		\
 			init_utils.cpp		\
 			print_functions.cpp	\
-			parse.cpp		\
-			VHost.cpp		\
+			parse.cpp			\
+			VHost.cpp			\
+			CgiHandler.cpp		\
 
 BINFILES	=	$(notdir $(SRCFILES:.cpp=.o))
 
@@ -73,6 +75,10 @@ $(BINDIR)%.o:	$(VHOSTDIR)%.cpp
 			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 
 $(BINDIR)%.o:	$(INITDIR)%.cpp
+			@mkdir -p $(BINDIR)
+			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
+
+$(BINDIR)%.o:	$(CGIDIR)%.cpp
 			@mkdir -p $(BINDIR)
 			$(CC) $(CFLAGS) -I $(INCLUDEDIR) -c $< -o $@
 

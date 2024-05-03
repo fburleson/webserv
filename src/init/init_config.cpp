@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   initConfig.cpp                                     :+:      :+:    :+:   */
+/*   init_config.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 21:39:39 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/04/30 04:56:25 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/03 19:38:51 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ bool	initConfig(const std::string &filePath, std::vector<t_conf> &serverConfigs)
 			return (false);
 		}
 		serverConfigs.push_back(conf);
-		printConfig(conf);
 	}
 	if (parseConfigs(serverConfigs) != EXIT_SUCCESS)
 		return (true); // turn to false!!!

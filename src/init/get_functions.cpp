@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   getFunctions.cpp                                   :+:      :+:    :+:   */
+/*   get_functions.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 22:31:35 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/04/29 09:26:26 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/01 00:11:34 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ uint32_t	getIP(std::string::iterator word) {
 }
 
 uint8_t	getKeywordIndex(const std::string::iterator &word) {
-	std::string		keyWords[9] = {"listen", "server_name", "root", "autoindex", "ip",
+	std::string		keyWords[9] = {"listen", "server_names", "root", "autoindex", "ip",
 									"allowed",  "max_body_size", "err_page", "index"};
 	unsigned char	wordEnd;
 	size_t			keyWordLen;
