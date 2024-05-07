@@ -6,11 +6,11 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 21:39:39 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/03 19:38:51 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/06 16:42:31 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "initialization.hpp"
+#include "init.hpp"
 #include <cctype>
 #include <fstream>
 

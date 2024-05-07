@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.cpp                                          :+:      :+:    :+:   */
+/*   init_utils.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:10:46 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/04/29 08:36:03 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/06 16:42:40 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "initialization.hpp"
+#include "init.hpp"
 #include <string>
 
 std::string::iterator	getFirstWord(std::string::iterator it) {

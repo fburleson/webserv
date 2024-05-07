@@ -18,7 +18,7 @@ t_httpresponse	VHost::_process_cgi(const t_httprequest &request, const t_route &
 		response = this->_process_error(HTTP_FORBIDDEN);
 		return (response);
 	}
-	CgiHandler	handler(request, route, request.body);
+	CgiHandler	handler(request, route);
 	if (!handler.startExecution())
 	{
 		response = this->_process_error(HTTP_INTERNAL_ERROR);
@@ -84,6 +84,7 @@ t_httpresponse	VHost::_process_post_method(const t_httprequest &request, const t
 	resource = parse_resource(request.url, route);
 	if (resource == route.root || resource == (route.root + '/'))
 	{
+		std::cout << "Resource: " << resource << std::endl;
 		response = this->_process_error(HTTP_BAD_REQUEST);
 		return (response);
 	}

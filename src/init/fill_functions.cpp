@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fillFunctions.cpp                                  :+:      :+:    :+:   */
+/*   fill_functions.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:09:32 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/04/29 08:36:37 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/06 16:41:33 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "initialization.hpp"
+#include "init.hpp"
 #include <cstring>
 
 static void	printBadAliasKey(const std::string &keyString,

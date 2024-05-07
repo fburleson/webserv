@@ -6,11 +6,13 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 18:26:05 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/03 19:46:42 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/07 23:36:58 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CgiHandler.hpp"
+#include <cerrno>
+#include <cstdlib>
 #include <unistd.h>
 #include <sys/wait.h>
 
@@ -36,7 +38,7 @@ static std::string	method_to_str(const HTTPMethod &method)
 	return ("UNKNOWN METHOD");
 }
 
-static std::string	get_query(const std::string &url) {
+static std::string	getQuery(const std::string &url) {
 	size_t	query_pos = url.find("?");
 
 	if (query_pos == std::string::npos)
@@ -55,10 +57,23 @@ static std::string	byteToString(const std::vector<std::byte> &body) {
 
 CgiHandler::CgiHandler(void) {}
 
-CgiHandler::CgiHandler(const t_httprequest &request, const t_route &route, const std::vector<std::byte> &body) {
-	_body = byteToString(body);
-	//std::cout << "body: " << _body << std::endl;
+CgiHandler::CgiHandler(const CgiHandler &source) {
+	*this = source;
+}
+
+CgiHandler::~CgiHandler(void) {}
+
+CgiHandler::CgiHandler(const t_httprequest &request, const t_route &route) {
 	_init(request, route);
+}
+
+CgiHandler	&CgiHandler::operator=(const CgiHandler &rightSide) {
+	if (this != &rightSide) {
+		_body = rightSide._body;
+		_env = rightSide._env;
+		_output = rightSide._output;
+	}
+	return (*this);
 }
 
 void	CgiHandler::_init(const t_httprequest &request, const t_route &route) {
@@ -66,10 +81,11 @@ void	CgiHandler::_init(const t_httprequest &request, const t_route &route) {
 	std::string	hostname;
 	std::string	port;
 
+	_body = byteToString(request.body);
 	if (request.head.find("Host") != request.head.end()) {
 		hostname = request.head.at("Host");
 		hostname.erase(hostname.find(":"));
-		port = request.head.at("Host").substr(hostname.length());
+		port = request.head.at("Host").substr(hostname.length() + 1);
 	}
 	_env["SERVER_SOFTWARE"] = "webserv/1.0";
 	_env["SERVER_NAME"] = hostname;
@@ -80,11 +96,13 @@ void	CgiHandler::_init(const t_httprequest &request, const t_route &route) {
 	_env["PATH_INFO"] = path;
 	_env["PATH_TRANSLATED"] = path;
 	_env["SCRIPT_NAME"] = path;
-	_env["QUERY_STRING"] = get_query(request.url);
+	_env["QUERY_STRING"] = getQuery(request.url);
 	if (request.head.find("Content-Type") != request.head.end())
 		_env["CONTENT_TYPE"] = request.head.at("Content-Type");
 	if (request.head.find("Content-Length") != request.head.end())
-	_env["CONTENT_LENGTH"] = request.head.at("Content-Length");
+		_env["CONTENT_LENGTH"] = request.head.at("Content-Length");
+	else
+		_env["CONTENT_LENGTH"] = std::to_string(_body.length());
 }
 
 char	**CgiHandler::_envToChar(void) const {
@@ -101,7 +119,7 @@ char	**CgiHandler::_envToChar(void) const {
 	return (envp);
 }
 
-void	CgiHandler::_execute_cgi(const int &inFD, const int &outFD) const {
+void	CgiHandler::_executeCgi(const int &inFD, const int &outFD) const {
 	char		**envp;
 	const char	*path = _env.at("PATH_INFO").c_str();
 	char		*argv[2] = {const_cast<char*>(path), NULL};
@@ -110,20 +128,21 @@ void	CgiHandler::_execute_cgi(const int &inFD, const int &outFD) const {
 		envp = _envToChar();
 	}
 	catch (const std::bad_alloc &e) {
-		std::cerr << ERR_MSG_START << "bad malloc" << std::endl;
+		std::cerr << ERR_MSG_START << strerror(errno) << std::endl;
 	}
 	dup2(inFD, STDIN_FILENO);
 	dup2(outFD, STDOUT_FILENO);
 	close(inFD);
 	close(outFD);
 	execve(path, argv, envp);
-	std::cerr << ERR_MSG_START << "execve failure" << std::endl;
+	std::cerr << ERR_MSG_START << "execve: " << strerror(errno) << std::endl;
 	_deleteCharEnv(envp);
 	exit(EXIT_FAILURE);
 }
 
 bool	CgiHandler::startExecution(void) {
 	int		inPipe[2], outPipe[2];
+	int		wstatus;
 	pid_t	pid;
 
 	if (pipe(inPipe))
@@ -137,7 +156,7 @@ bool	CgiHandler::startExecution(void) {
 	pid = fork();
 	if (!pid) {
 		close(outPipe[0]);
-		_execute_cgi(inPipe[0], outPipe[1]);
+		_executeCgi(inPipe[0], outPipe[1]);
 	}
 	if (pid == -1) {
 		close(inPipe[0]);
@@ -146,7 +165,11 @@ bool	CgiHandler::startExecution(void) {
 	}
 	close(inPipe[0]);
 	close(outPipe[1]);
-	waitpid(pid, NULL, 0);
+	waitpid(pid, &wstatus, 0);
+	if (WEXITSTATUS(wstatus) != EXIT_SUCCESS || WIFSIGNALED(wstatus)) {
+		close(outPipe[0]);
+		return (false);
+	}
 	_output = read_file(outPipe[0]);
 	close(outPipe[0]);
 	return (true);

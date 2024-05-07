@@ -1,4 +1,5 @@
 #include "VHost.hpp"
+#include <system_error>
 
 VHost::VHost(void)
 {
@@ -95,8 +96,26 @@ bool	VHost::_is_incomplete_dir(const t_httprequest &request, const t_route &rout
 
 bool	VHost::_is_cgi(const t_httprequest &request) const
 {
-	if (request.url.find(".py") != std::string::npos)
+	std::string	filename, file_extension;
+	size_t	slash_index, dot_index, query_index;
+
+	slash_index = request.url.find_last_of("/");
+	if (slash_index == std::string::npos)
+		return (false);
+	filename = request.url.substr(slash_index + 1);
+	dot_index = filename.find_last_of(".");
+	if (dot_index == std::string::npos)
+		return (false);
+	file_extension = filename.substr(dot_index);
+	query_index = file_extension.find("?");
+	if (query_index != std::string::npos)
+		file_extension.erase(query_index);
+	if (file_extension == ".py" || \
+		file_extension == ".php" || \
+		file_extension == ".cgi")
+	{
 		return (true);
+	}
 	return (false);
 }
 
@@ -179,7 +198,8 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 		response = process_redirect(route.redirect);
 	else if (request.method == HTTP_GET && this->_is_incomplete_dir(request, route))
 		response = process_redirect(request.url + '/');
-	else if (request.method == HTTP_GET && this->_is_cgi(request))
+	else if ((request.method == HTTP_GET || request.method == HTTP_POST) \
+			&& this->_is_cgi(request))
 		response = this->_process_cgi(request, route);
 	else if (request.method == HTTP_GET)
 		response = this->_process_get_method(request, route);
@@ -191,7 +211,8 @@ t_httpresponse	VHost::process_request(const t_httprequest &request) const
 	response.client = request.client;
 	response.message = process_message(response.status);
 	response.head.insert({"Server", SERVER_NAME});
-	response.head.insert({"Content-Length", std::to_string(response.body.size())});
+	if (!response.head.contains("Content-Length"))
+		response.head.insert({"Content-Length", std::to_string(response.body.size())});
 	if (request.head.contains("Connection") && request.head.at("Connection") == "close")
 		response.head.insert({"Connection", "close"});
 	else

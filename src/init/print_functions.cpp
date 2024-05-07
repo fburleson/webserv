@@ -6,11 +6,11 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:17:46 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/03 17:18:54 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/06 16:43:02 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "initialization.hpp"
+#include "init.hpp"
 
 void	printError(const std::string &msg) {
 	std::cerr << msg << std::endl;

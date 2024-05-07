@@ -6,11 +6,11 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 22:31:35 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/01 00:11:34 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/06 16:41:39 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "initialization.hpp"
+#include "init.hpp"
 #include <stdexcept>
 #include <cstring>
 
