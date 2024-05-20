@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 21:39:39 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/06 16:42:31 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/20 14:52:53 by fsarkoh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ bool	initConfig(const std::string &filePath, std::vector<t_conf> &serverConfigs)
 		}
 		serverConfigs.push_back(conf);
 	}
-	if (parseConfigs(serverConfigs) != EXIT_SUCCESS)
-		return (true); // turn to false!!!
+	testConfigs(serverConfigs);
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:37:25 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/01 00:24:44 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/20 14:52:42 by fsarkoh          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ class ConfigException : public std::exception {
 
 void					parseLeftOverString(std::string::iterator &start, const std::string &keyWord);
 void					parseSeparator(std::string::iterator &word);
-uint8_t					parseConfigs(std::vector<t_conf> &serverConfigs);
+void					testConfigs(std::vector<t_conf> &serverConfigs);
 bool					parsePath(const std::string &path);
 
 uint32_t				getIP(std::string::iterator word);
