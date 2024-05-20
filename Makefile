@@ -37,7 +37,7 @@ BINFILES	=	$(notdir $(SRCFILES:.cpp=.o))
 SRCS		=	$(addprefix $(SRCDIR), $(SRCFILES))
 BINS		=	$(addprefix $(BINDIR), $(BINFILES))
 
-CC		=	c++
+CC		=	g++-12
 CFLAGS		=	-Wall -Wextra -Werror -std=c++23
 RM		=	rm -rf
 
