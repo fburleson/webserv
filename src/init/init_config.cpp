@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 21:39:39 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/20 14:52:53 by fsarkoh          ###   ########.fr       */
+/*   Updated: 2024/05/21 18:05:43 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 #include <cctype>
 #include <fstream>
 
-static void	findOpenScope(std::ifstream &configFile, std::string::iterator &word, std::string::iterator &wordEnd) {
-	std::string	line;
-
+static void	findOpenScope(std::ifstream &configFile, std::string::iterator &word, \
+						std::string::iterator &wordEnd, std::string &line) {
 	if (*wordEnd == '{')
 		word = wordEnd;
 	else if (*getNextWord(word) && *word != '{')  {
@@ -76,7 +75,7 @@ static std::string	createAlias(std::ifstream &configFile, t_conf &conf, std::str
 	}
 	newAlias.default_route.alias = std::string(word, wordEnd);
 	newAlias.default_route.autoindex = DEFAULT_AUTOINDEX;
-	findOpenScope(configFile, word, wordEnd);
+	findOpenScope(configFile, word, wordEnd, lastLine);
 	if ((!std::isspace(*(++word)) && *word) || *getNextWord(word)) {
 		keyWordIndex = getKeywordIndex(word);
 		parseSeparator(word);
