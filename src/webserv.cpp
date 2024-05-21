@@ -15,7 +15,8 @@ int	main(int argc, char **argv)
 		return (error("no configuration file provided", ERR_NO_CONFIG));
 	if (!initConfig(argv[1], configs))
 			return (EXIT_FAILURE);
-	if (server.init(configs) != OK)
+	init_status = server.init(configs);
+	if (init_status != OK)
 		return (error("port conflict in configuration", init_status));
 	while (true)
 	{
