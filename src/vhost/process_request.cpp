@@ -84,7 +84,6 @@ t_httpresponse	VHost::_process_post_method(const t_httprequest &request, const t
 	resource = parse_resource(request.url, route);
 	if (resource == route.root || resource == (route.root + '/'))
 	{
-		std::cout << "Resource: " << resource << std::endl;
 		response = this->_process_error(HTTP_BAD_REQUEST);
 		return (response);
 	}
