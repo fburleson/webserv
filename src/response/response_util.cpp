@@ -44,6 +44,8 @@ std::string	process_message(const HTTPStatus &code)
 		return ("Bad Request");
 	if (code == HTTP_FORBIDDEN)
 		return ("Forbidden");
+	if (code == HTTP_TIMEOUT)
+		return ("Gateway Timeout");
 	return ("Internal Server Error");
 }
 

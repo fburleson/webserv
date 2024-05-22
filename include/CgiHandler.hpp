@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 18:10:28 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/03 20:09:19 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/22 16:09:18 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "webserv.hpp"
 
 #define ERR_MSG_START	"webserv: cgi: "
+#define TIME_LIMIT		5
 
 class CgiHandler {
 	private:
@@ -36,7 +37,7 @@ class CgiHandler {
 
 		CgiHandler	&operator=(const CgiHandler& rightSide);
 
-		bool		startExecution(void);
+		int8_t		startExecution(void);
 
 		std::string	getOutput(void) const;
 };
