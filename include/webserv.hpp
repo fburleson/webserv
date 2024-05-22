@@ -130,7 +130,7 @@ std::vector<std::byte>				parse_body(const std::string &body);
 
 std::vector<std::byte>			stobyte(const std::string &body);
 std::vector<std::byte>			ftobyte(const std::string &file);
-void					send_response(t_httpresponse &response);
+int					send_response(t_httpresponse &response);
 std::string				process_message(const HTTPStatus &code);
 std::string				parse_resource(const std::string &url, const t_route &route);
 std::vector<std::byte>			generate_err_page(const HTTPStatus &code);
