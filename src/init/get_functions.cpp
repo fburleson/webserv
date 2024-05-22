@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 22:31:35 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/06 16:41:39 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/22 15:20:57 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ uint32_t	getIP(std::string::iterator word) {
 }
 
 uint8_t	getKeywordIndex(const std::string::iterator &word) {
-	std::string		keyWords[9] = {"listen", "server_names", "root", "autoindex", "ip",
-									"allowed",  "max_body_size", "err_page", "index"};
+	std::string		keyWords[10] = {"listen", "server_names", "root", "autoindex", "ip",
+									"allowed",  "max_body_size", "err_page", "index", "redirect"};
 	unsigned char	wordEnd;
 	size_t			keyWordLen;
 	uint8_t			i;
 
-	for (i = 0; i < 9; ++i) {
+	for (i = 0; i < 10; ++i) {
 		keyWordLen = keyWords[i].size();
 		if (!keyWords[i].compare(0, keyWordLen,  &(*word), keyWordLen)) {
 			wordEnd = word[keyWordLen];
@@ -62,7 +62,7 @@ uint8_t	getKeywordIndex(const std::string::iterator &word) {
 			break;
 		}
 	}
-	if (i > 8) {
+	if (i > 9) {
 		throw ConfigException(std::string(ERR_UNKNOWN_KEY) + "\"" 
 				+ std::string(word, skipWord(word)) + "\"");
 	}

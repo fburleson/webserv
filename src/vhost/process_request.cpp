@@ -19,9 +19,14 @@ t_httpresponse	VHost::_process_cgi(const t_httprequest &request, const t_route &
 		return (response);
 	}
 	CgiHandler	handler(request, route);
-	if (!handler.startExecution())
+	if (handler.startExecution() == -1)
 	{
 		response = this->_process_error(HTTP_INTERNAL_ERROR);
+		return (response);
+	}
+	if (!handler.startExecution())
+	{
+		response = this->_process_error(HTTP_TIMEOUT);
 		return (response);
 	}
 	output = handler.getOutput();

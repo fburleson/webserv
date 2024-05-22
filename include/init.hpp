@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:37:25 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/20 14:52:42 by fsarkoh          ###   ########.fr       */
+/*   Updated: 2024/05/22 15:20:20 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ enum keyWordIndices {
 	ALLOWED,
 	MAX_BODY_SIZE,
 	ERR_PAGE,
-	INDEX
+	INDEX,
+	REDIRECT
 };
 
 class ConfigException : public std::exception {

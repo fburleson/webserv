@@ -12,6 +12,8 @@ name = form.getvalue('name', 'Guest')
 age = form.getvalue('age', 'Unknown')
 
 # HTML content of the page
+while 1:
+    pass
 html_content = """
 <!DOCTYPE html>
 <html lang="en">

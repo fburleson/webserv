@@ -6,14 +6,11 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 18:26:05 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/07 23:36:58 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/22 16:03:57 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "CgiHandler.hpp"
-#include <cerrno>
-#include <cstdlib>
-#include <unistd.h>
+#include "../../include/CgiHandler.hpp"
 #include <sys/wait.h>
 
 static void	closePipe(int *pipe) {
@@ -54,6 +51,33 @@ static std::string	byteToString(const std::vector<std::byte> &body) {
 	return (s);
 }
 
+static int8_t	waitLimit(pid_t &pid, const int &timeLimit) {
+	std::chrono::time_point		start = std::chrono::system_clock::now();
+	std::chrono::duration<long>	elapsed;
+	int							wstatus;
+	pid_t						waitStatus;
+	
+
+	while (true) {
+		waitStatus = waitpid(pid, &wstatus, WNOHANG);
+		if (waitStatus == pid) {
+			if (WEXITSTATUS(wstatus) != EXIT_SUCCESS || WIFSIGNALED(wstatus))
+				return (-1);
+			return (1);
+		}
+		if (waitStatus == -1) {
+			kill(pid, SIGINT);
+			waitpid(pid, NULL, 0);
+			return (-1);
+		}
+		elapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start);
+		if (elapsed.count() >= timeLimit) {
+			kill(pid, SIGINT);
+			waitpid(pid, NULL, 0);
+			return (0);
+		}
+	}
+}
 
 CgiHandler::CgiHandler(void) {}
 
@@ -140,18 +164,22 @@ void	CgiHandler::_executeCgi(const int &inFD, const int &outFD) const {
 	exit(EXIT_FAILURE);
 }
 
-bool	CgiHandler::startExecution(void) {
+int8_t	CgiHandler::startExecution(void) {
 	int		inPipe[2], outPipe[2];
-	int		wstatus;
+	int		waitStatus;
 	pid_t	pid;
 
 	if (pipe(inPipe))
-		return (false);
+		return (-1);
 	if (pipe(outPipe)) {
 		closePipe(inPipe);
-		return (false);
+		return (-1);
 	}
-	write(inPipe[1], _body.c_str(), _body.size());
+	if (write(inPipe[1], _body.c_str(), _body.size()) == -1) {
+		closePipe(inPipe);
+		closePipe(outPipe);
+		return (-1);
+	}
 	close(inPipe[1]);
 	pid = fork();
 	if (!pid) {
@@ -161,18 +189,18 @@ bool	CgiHandler::startExecution(void) {
 	if (pid == -1) {
 		close(inPipe[0]);
 		closePipe(outPipe);
-		return (false);
+		return (-1);
 	}
 	close(inPipe[0]);
 	close(outPipe[1]);
-	waitpid(pid, &wstatus, 0);
-	if (WEXITSTATUS(wstatus) != EXIT_SUCCESS || WIFSIGNALED(wstatus)) {
+	waitStatus = waitLimit(pid, TIME_LIMIT);
+	if (waitStatus != 1) {
 		close(outPipe[0]);
-		return (false);
+		return (waitStatus);
 	}
 	_output = read_file(outPipe[0]);
 	close(outPipe[0]);
-	return (true);
+	return (1);
 }
 
 void	CgiHandler::_deleteCharEnv(char **envp) const {

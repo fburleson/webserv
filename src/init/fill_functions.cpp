@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:09:32 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/06 16:41:33 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/22 15:20:00 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,12 @@ void	fillAlias(std::string::iterator& word, const uint8_t keyWordIndex, t_conf &
 		case ERR_PAGE:
 			printBadAliasKey("err_page", word);
 			break;
-		default:
+		case INDEX:
 			printBadAliasKey("index", word);
+			break;
+		case REDIRECT:
+			conf.default_route.redirect = getWordValue(word);
+			parseLeftOverString(word, "redirect");
 	}
 }
 
@@ -89,6 +93,9 @@ void	fillConfig(std::string::iterator& word, const uint8_t keyWordIndex, t_conf 
 			conf.default_route.index = getWordValue(word);
 			parseLeftOverString(word, "index");
 			break;
+		case REDIRECT:
+			conf.default_route.redirect = getWordValue(word);
+			parseLeftOverString(word, "redirect");
 	}
 }
 
