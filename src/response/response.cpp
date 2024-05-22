@@ -39,12 +39,15 @@ static std::string	format_response(const t_httpresponse &response)
 	return (data.str());
 }
 
-void	send_response(t_httpresponse &response)
+int	send_response(t_httpresponse &response)
 {
+	int		status;
 	std::string	formatted;
 
 	formatted = format_response(response);
-	if (send(response.client.fd, formatted.c_str(), formatted.size(), 0) == -1)
+	status = send(response.client.fd, formatted.c_str(), formatted.size(), 0);
+	if (status == -1)
 		std::cerr << " send(): " << strerror(errno) << std::endl;
+	return (status);
 }
 

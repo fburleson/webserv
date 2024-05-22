@@ -170,7 +170,11 @@ void	Server::send_queued_response(const t_socket &socket)
 	if (this->_responses.contains(socket.poll_fd.fd))
 	{
 		response = this->_responses.at(socket.poll_fd.fd).front();
-		send_response(response);
+		if (send_response(response) == -1)
+		{
+			this->close_socket(socket);
+			return ;
+		}
 		this->_responses.at(socket.poll_fd.fd).pop();
 		if (response.head.at("Connection") == "close")
 			this->close_socket(socket);
