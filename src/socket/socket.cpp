@@ -12,7 +12,7 @@ static int	bind_sock(int fd, const uint32_t &ip, const uint16_t &port)
 	sockaddr_in	socket_address;
 
 	socket_address.sin_family = AF_INET;
-	socket_address.sin_addr.s_addr = ip;
+	socket_address.sin_addr.s_addr = htonl(ip);
 	socket_address.sin_port = htons(port);
 	return (bind(fd, (sockaddr *)&socket_address, sizeof(socket_address)));
 }
