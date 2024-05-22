@@ -68,4 +68,3 @@ html_content = """
 
 # Print the HTML content
 print(html_content)
-
