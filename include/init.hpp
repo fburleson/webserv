@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:37:25 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/22 15:20:20 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/22 16:20:55 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #define DEFAULT_IP			0x7F000001 //127.0.0.1
 #define DEFAULT_BODY		1024
 #define DEFAULT_AUTOINDEX	false
+#define DEFAULT_INDEX		"/index.html"
 #define DEFAULT_PORT		80
 
 enum keyWordIndices {

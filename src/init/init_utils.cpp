@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 23:10:46 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/06 16:42:40 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/22 16:20:51 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,5 @@ void	setDefault(t_conf &conf) {
 	conf.max_body_size = DEFAULT_BODY;
 	conf.port = DEFAULT_PORT;
 	conf.default_route.autoindex = DEFAULT_AUTOINDEX;
+	conf.default_route.index = DEFAULT_INDEX;
 }

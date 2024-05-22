@@ -6,7 +6,7 @@
 /*   By: bjacobs <bjacobs@student.codam.nl>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 21:39:39 by bjacobs           #+#    #+#             */
-/*   Updated: 2024/05/21 18:05:43 by bjacobs          ###   ########.fr       */
+/*   Updated: 2024/05/22 16:47:06 by bjacobs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static std::string	createAlias(std::ifstream &configFile, t_conf &conf, std::str
 	
 	if (!conf.default_route.alias.empty())
 		throw ConfigException(std::string(ERR_MSG_START) + "alias defined in an alias");
-	for (wordEnd = word; !std::isspace(*wordEnd) && *(wordEnd+1); ++wordEnd) {
+	for (wordEnd = word; !std::isspace(*wordEnd) && *wordEnd; ++wordEnd) {
 		if (*wordEnd == '{' && *(wordEnd-1) != '\\'
 				&& !std::isspace(*(wordEnd+1)))
 			throw  ConfigException(std::string(ERR_MSG_START) + "\"{\" in alias directive");
